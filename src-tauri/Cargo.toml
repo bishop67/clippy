@@ -102,9 +102,9 @@ tray-icon = { version = "0", features = ["linux-ksni"] }
 [target.'cfg(windows)'.dependencies]
 # Attach to the parent terminal's console (if any) so the GUI release build
 # can print logs when launched from a terminal. See attach_parent_console().
-# Pinned: HWND became a pointer in 0.60, and "0" resolved back to 0.45 where it
-# is still an isize.
-windows-sys = { version = "0", features = [
+# Pinned: HWND became a pointer in 0.60, and "0" resolves back to a release
+# where it is still an isize, so `is_null` does not exist.
+windows-sys = { version = "0.61", features = [
   "Win32_System_Console",
   "Win32_Foundation",
   "Win32_Graphics_Dwm",
