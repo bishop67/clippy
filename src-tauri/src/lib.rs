@@ -55,6 +55,9 @@ pub fn run() {
     let mut log_builder = tauri_plugin_log::Builder::new()
         .clear_targets()
         .level(log::LevelFilter::Info)
+        // zbus logs every incoming D-Bus method call at info, and the tray is
+        // polled constantly, which buries everything else.
+        .level_for("zbus", log::LevelFilter::Warn)
         .max_file_size(10 * 1024 * 1024) // 10 MB per file before it rolls
         .rotation_strategy(tauri_plugin_log::RotationStrategy::KeepSome(30))
         .timezone_strategy(tauri_plugin_log::TimezoneStrategy::UseLocal)
