@@ -1,11 +1,10 @@
 import { VsFileBinary } from "solid-icons/vs";
 import { Component, createEffect, createSignal } from "solid-js";
-import { invokeCommand } from "../../../../lib/tauri";
 import { SettingsStore } from "../../../../store/settings-store";
 import { ClipboardFileModel, ClipboardWithRelations } from "../../../../types";
 import { ClipboardType } from "../../../../types/enums";
-import { InvokeCommand } from "../../../../types/tauri-invoke";
 import { formatBytes } from "../../../../utils";
+import { copyEntry } from "../../../../utils/clipboard-actions";
 import { LANGUAGES } from "../../../../utils/constants";
 import dayjs from "../../../../utils/dayjs";
 import { ClipboardHeader } from "./clipboard-header";
@@ -22,10 +21,7 @@ export const FileClipboard: Component<FileClipboardProps> = (props) => {
 
   const handleClick = async (e: MouseEvent) => {
     e.stopPropagation();
-    await invokeCommand(InvokeCommand.CopyClipboard, {
-      id: props.data.clipboard.id,
-      type: ClipboardType.File,
-    });
+    await copyEntry(props.data.clipboard.id, ClipboardType.File);
   };
 
   const getGroupedFiles = () => {

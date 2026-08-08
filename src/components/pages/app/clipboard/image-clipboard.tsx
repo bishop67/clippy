@@ -6,6 +6,7 @@ import { SettingsStore } from "../../../../store/settings-store";
 import { ClipboardWithRelations } from "../../../../types";
 import { ClipboardType } from "../../../../types/enums";
 import { InvokeCommand } from "../../../../types/tauri-invoke";
+import { copyEntry } from "../../../../utils/clipboard-actions";
 import { formatBytes } from "../../../../utils";
 import { LANGUAGES } from "../../../../utils/constants";
 import dayjs from "../../../../utils/dayjs";
@@ -28,10 +29,7 @@ export const ImageClipboard: Component<ImageClipboardProps> = (props) => {
     e.stopPropagation();
     if (e.detail === 1) {
       dbClickTimer = setTimeout(async () => {
-        await invokeCommand(InvokeCommand.CopyClipboard, {
-          id: props.data.clipboard.id,
-          type: ClipboardType.Image,
-        });
+        await copyEntry(props.data.clipboard.id, ClipboardType.Image);
       }, 200);
     }
   };

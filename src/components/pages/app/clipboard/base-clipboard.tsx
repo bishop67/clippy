@@ -9,6 +9,7 @@ import { ClipboardStore } from "../../../../store/clipboard-store";
 import { ClipboardModel, ClipboardWithRelations } from "../../../../types";
 import { ClipboardType } from "../../../../types/enums";
 import { InvokeCommand } from "../../../../types/tauri-invoke";
+import { copyEntry } from "../../../../utils/clipboard-actions";
 import { useLanguage } from "../../../provider/language-provider";
 import { FileClipboard } from "./file-clipboard";
 import { ImageClipboard } from "./image-clipboard";
@@ -100,18 +101,12 @@ export const BaseClipboard: Component<BaseClipboardProps> = (props) => {
 
   const handleRtfCopy = async (e: MouseEvent) => {
     e.stopPropagation();
-    await invokeCommand(InvokeCommand.CopyClipboard, {
-      id: props.data.clipboard.id,
-      type: ClipboardType.Rtf,
-    });
+    await copyEntry(props.data.clipboard.id, ClipboardType.Rtf);
   };
 
   const handleHtmlCopy = async (e: MouseEvent) => {
     e.stopPropagation();
-    await invokeCommand(InvokeCommand.CopyClipboard, {
-      id: props.data.clipboard.id,
-      type: ClipboardType.Html,
-    });
+    await copyEntry(props.data.clipboard.id, ClipboardType.Html);
   };
 
   const canExpand = () =>

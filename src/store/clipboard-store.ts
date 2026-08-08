@@ -9,6 +9,7 @@ import {
   SearchEvent,
 } from "../types";
 import { InvokeCommand } from "../types/tauri-invoke";
+import { copyEntry } from "../utils/clipboard-actions";
 import { AppStore } from "./app-store";
 
 export const initialWhere: ClipboardWhere = {
@@ -212,11 +213,7 @@ function createClipboardStore() {
       case "Enter":
         if (selectedIndex() >= 0) {
           const clipboard = clipboards()[selectedIndex()];
-          const type = clipboard.clipboard.types[0];
-          await invokeCommand(InvokeCommand.CopyClipboard, {
-            id: clipboard.clipboard.id,
-            type,
-          });
+          await copyEntry(clipboard.clipboard.id, clipboard.clipboard.types[0]);
         }
         break;
     }

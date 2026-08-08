@@ -3,12 +3,11 @@ import { BsFiletypeHtml, BsJournalRichtext } from "solid-icons/bs";
 import { FiFileText, FiLink } from "solid-icons/fi";
 import { Component, createEffect, createSignal } from "solid-js";
 import { rgbCompatible } from "../../../../lib/colors";
-import { invokeCommand } from "../../../../lib/tauri";
 import { ClipboardStore } from "../../../../store/clipboard-store";
 import { SettingsStore } from "../../../../store/settings-store";
 import { ClipboardWithRelations } from "../../../../types";
 import { ClipboardTextType, ClipboardType } from "../../../../types/enums";
-import { InvokeCommand } from "../../../../types/tauri-invoke";
+import { copyEntry } from "../../../../utils/clipboard-actions";
 import { LANGUAGES } from "../../../../utils/constants";
 import dayjs from "../../../../utils/dayjs";
 import { ClipboardHeader } from "./clipboard-header";
@@ -79,10 +78,7 @@ export const TextClipboard: Component<TextClipboardProps> = (props) => {
 
   const handleClick = async (e: MouseEvent) => {
     e.stopPropagation();
-    await invokeCommand(InvokeCommand.CopyClipboard, {
-      id: props.data.clipboard.id,
-      type: ClipboardType.Text,
-    });
+    await copyEntry(props.data.clipboard.id, ClipboardType.Text);
   };
 
   createEffect(() => {
