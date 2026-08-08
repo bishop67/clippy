@@ -169,11 +169,13 @@ pub fn toggle_main_window() {
         // came from still holds focus.
         capture_target_window();
 
-        update_main_window_position();
-
+        // Sized before positioning: the cursor placement clamps against the
+        // window's own dimensions, so it has to read the size it will have.
         get_main_window()
             .set_size(calculate_logical_size(MAIN_WINDOW_X, MAIN_WINDOW_Y))
             .expect("Failed to set window size");
+
+        update_main_window_position();
 
         get_main_window()
             .emit(
