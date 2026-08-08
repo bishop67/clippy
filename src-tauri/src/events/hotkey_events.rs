@@ -11,7 +11,7 @@ use crate::utils::fullscreen_detector::is_other_window_fullscreen;
 use crate::{
     service::{
         clipboard::copy_clipboard_from_index,
-        keyboard::type_last_clipboard,
+        keyboard::{paste_on_select, type_last_clipboard},
         window::toggle_main_window,
     },
     utils::hotkey_manager::{register_hotkeys, unregister_hotkeys, upsert_hotkeys_in_store},
@@ -154,9 +154,11 @@ pub async fn parse_hotkey_event(key: &Key) {
                 .collect::<String>()
                 .parse::<u64>()
                 .expect("Failed to parse number");
-            copy_clipboard_from_index(num - 1)
-                .await
-                .expect("Failed to copy clipboard");
+            match copy_clipboard_from_index(num - 1).await {
+                Ok(Some(model)) => paste_on_select(model.id).await,
+                Ok(None) => {}
+                Err(e) => printlog!("copy_clipboard_from_index failed: {e:?}"),
+            }
         }
         None => panic!("Error parsing hotkey event: {}", key.event),
     };

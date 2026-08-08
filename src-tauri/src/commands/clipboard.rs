@@ -3,6 +3,7 @@ use crate::service::clipboard::{
     filter_clipboards, get_all_clipboards_db, init_clipboards, load_clipboards_for_search,
 };
 use crate::service::decrypt::{decrypt_clipboard, decrypt_clipboard_search, read_encryption_key};
+use crate::service::keyboard::paste_on_select;
 use crate::service::settings::get_global_settings;
 use crate::tao::connection::db;
 use crate::tao::global::{get_app, get_cache};
@@ -302,7 +303,13 @@ pub async fn search_clipboards(
 #[tauri::command]
 pub async fn copy_clipboard(id: Uuid, r#type: ClipboardType) -> Result<bool, CommandError> {
     unregister_hotkeys(false);
-    Ok(copy_clipboard_from_id(id, r#type).await?)
+    let success = copy_clipboard_from_id(id, r#type).await?;
+
+    if success {
+        paste_on_select(id).await;
+    }
+
+    Ok(success)
 }
 
 #[tauri::command]

@@ -1,10 +1,27 @@
 use crate::prelude::*;
-use crate::service::clipboard::get_last_clipboard_db;
-use common::types::enums::ClipboardType;
+use crate::service::cipher::is_encryption_key_set;
+use crate::service::clipboard::{get_clipboard_db, get_last_clipboard_db};
+use crate::service::decrypt::decrypt_clipboard;
+use crate::service::settings::get_global_settings;
+use crate::service::target_window::{current_window, get_target_window, raise_target_window};
+use crate::tao::global::get_main_window;
+use common::types::enums::{ClipboardType, PasteOnSelect};
 use common::types::orm_query::FullClipboardDto;
-#[cfg(not(target_os = "linux"))]
-use enigo::{Enigo, Keyboard, Settings};
+use enigo::{Direction, Enigo, Key, Keyboard, Settings};
 use std::time::Duration;
+use uuid::Uuid;
+
+// Mirrors CopyQ's window_wait_* defaults, which are tuned for the same job.
+const WAIT_BEFORE_RAISE_MS: u64 = 20;
+const WAIT_RAISED_MS: u64 = 150;
+const WAIT_AFTER_RAISED_MS: u64 = 50;
+const FOCUS_POLL_INTERVAL_MS: u64 = 10;
+
+/// Some toolkits drop a chord that is pressed and released in the same frame.
+const KEY_HOLD_MS: u64 = if cfg!(target_os = "macos") { 100 } else { 50 };
+
+/// Used where the focused window cannot be queried, so settling is all we can do.
+const BLIND_FOCUS_RETURN_MS: u64 = 300;
 
 pub async fn type_last_clipboard() {
     let clipboard = get_last_clipboard_db().await;
@@ -12,11 +29,224 @@ pub async fn type_last_clipboard() {
     if let Ok(clipboard_data) = clipboard {
         if let Some(content) = get_clipboard_content(&clipboard_data) {
             if content.len() < 500 {
-                std::thread::sleep(Duration::from_millis(300));
+                std::thread::sleep(Duration::from_millis(BLIND_FOCUS_RETURN_MS));
                 type_text(&content);
             }
         }
     }
+}
+
+/// Sends the configured paste action to the window the user came from.
+///
+/// Does nothing unless the user opted in. Failures are logged rather than
+/// surfaced: the clipboard write already succeeded by this point, so the entry
+/// can still be pasted by hand.
+pub async fn paste_on_select(clipboard_id: Uuid) {
+    let mode = PasteOnSelect::from_setting(&get_global_settings().paste_on_select);
+
+    if mode == PasteOnSelect::Off {
+        return;
+    }
+
+    // Resolve the text before hiding, so an image or file entry in type mode
+    // leaves the window alone instead of closing it for nothing.
+    let text = if mode == PasteOnSelect::Type {
+        match resolve_text(clipboard_id).await {
+            Some(text) => Some(text),
+            None => return,
+        }
+    } else {
+        None
+    };
+
+    hide_for_paste();
+
+    if !wait_for_target_focus().await {
+        return;
+    }
+
+    match text {
+        Some(text) => type_text(&text),
+        None => send_paste_chord(),
+    }
+}
+
+async fn resolve_text(clipboard_id: Uuid) -> Option<String> {
+    let mut clipboard_data = match get_clipboard_db(clipboard_id).await {
+        Ok(data) => data,
+        Err(e) => {
+            printlog!("paste_on_select: failed to load clipboard: {e:?}");
+            return None;
+        }
+    };
+
+    if clipboard_data.clipboard.encrypted && is_encryption_key_set() {
+        clipboard_data = match decrypt_clipboard(clipboard_data) {
+            Ok(data) => data,
+            Err(e) => {
+                printlog!("paste_on_select: failed to decrypt clipboard: {e:?}");
+                return None;
+            }
+        };
+    }
+
+    get_clipboard_content(&clipboard_data)
+}
+
+/// Unlike the copy path, this hide is not gated on the build profile: leaving
+/// the window up means pasting into Clippy itself.
+fn hide_for_paste() {
+    // The resulting Focused(false) is a no-op because that handler returns
+    // early once the window is already hidden.
+    get_main_window().hide().ok();
+}
+
+/// Waits for the recorded window to regain focus, raising it if it does not.
+///
+/// Returns false when focus never arrives, in which case no keys are sent.
+/// Pasting into an unknown window is worse than not pasting at all.
+async fn wait_for_target_focus() -> bool {
+    let Some(target) = get_target_window() else {
+        // No window was recorded (Wayland, or the picker was opened from the
+        // tray), so settle and trust whatever holds focus.
+        tokio::time::sleep(Duration::from_millis(BLIND_FOCUS_RETURN_MS)).await;
+        return true;
+    };
+
+    if poll_focus(target, WAIT_BEFORE_RAISE_MS).await {
+        tokio::time::sleep(Duration::from_millis(WAIT_AFTER_RAISED_MS)).await;
+        return true;
+    }
+
+    raise_target_window();
+
+    if poll_focus(target, WAIT_RAISED_MS).await {
+        tokio::time::sleep(Duration::from_millis(WAIT_AFTER_RAISED_MS)).await;
+        return true;
+    }
+
+    printlog!("paste_on_select: window {target} never regained focus, not sending keys");
+    false
+}
+
+async fn poll_focus(target: u32, timeout_ms: u64) -> bool {
+    let deadline = std::time::Instant::now() + Duration::from_millis(timeout_ms);
+
+    loop {
+        if current_window() == Some(target) {
+            return true;
+        }
+
+        if std::time::Instant::now() >= deadline {
+            return false;
+        }
+
+        tokio::time::sleep(Duration::from_millis(FOCUS_POLL_INTERVAL_MS)).await;
+    }
+}
+
+/// Ctrl+V (Cmd+V on macOS). Shift+Insert would also cover terminals, but on X11
+/// most toolkits serve it from the PRIMARY selection rather than CLIPBOARD, and
+/// Clippy only owns CLIPBOARD, so it pastes nothing.
+fn send_paste_chord() {
+    #[cfg(target_os = "macos")]
+    let (modifier, key) = (Key::Meta, Key::Unicode('v'));
+    #[cfg(not(target_os = "macos"))]
+    let (modifier, key) = (Key::Control, Key::Unicode('v'));
+
+    let mut enigo = match new_enigo() {
+        Ok(enigo) => enigo,
+        Err(e) => {
+            printlog!("paste_on_select: Enigo::new failed: {e:?}");
+            #[cfg(target_os = "linux")]
+            send_paste_chord_fallback();
+            return;
+        }
+    };
+
+    if let Err(e) = enigo.key(modifier, Direction::Press) {
+        printlog!("paste_on_select: modifier press failed: {e:?}");
+        #[cfg(target_os = "linux")]
+        send_paste_chord_fallback();
+        return;
+    }
+
+    std::thread::sleep(Duration::from_millis(KEY_HOLD_MS));
+
+    if let Err(e) = enigo.key(key, Direction::Click) {
+        printlog!("paste_on_select: key click failed: {e:?}");
+    }
+
+    // Released unconditionally: a stuck modifier is worse than a missed paste.
+    if let Err(e) = enigo.key(modifier, Direction::Release) {
+        printlog!("paste_on_select: modifier release failed: {e:?}");
+    }
+}
+
+fn new_enigo() -> Result<Enigo, enigo::NewConError> {
+    Enigo::new(&Settings::default())
+}
+
+/// Used when enigo cannot reach the display server at all.
+#[cfg(target_os = "linux")]
+fn send_paste_chord_fallback() {
+    let candidates: &[(&str, &[&str])] = if is_wayland() {
+        &[
+            ("wtype", &["-M", "ctrl", "v", "-m", "ctrl"]),
+            // ydotool speaks raw evdev codes, not key names:
+            // 29 = KEY_LEFTCTRL, 47 = KEY_V, :1 press, :0 release.
+            ("ydotool", &["key", "29:1", "47:1", "47:0", "29:0"]),
+        ]
+    } else {
+        &[
+            ("xdotool", &["key", "--clearmodifiers", "ctrl+v"]),
+            ("wtype", &["-M", "ctrl", "v", "-m", "ctrl"]),
+        ]
+    };
+
+    run_first_available("paste_on_select", candidates, None);
+}
+
+#[cfg(target_os = "linux")]
+fn is_wayland() -> bool {
+    std::env::var_os("WAYLAND_DISPLAY").is_some()
+        || std::env::var("XDG_SESSION_TYPE")
+            .map(|v| v.eq_ignore_ascii_case("wayland"))
+            .unwrap_or(false)
+}
+
+/// Runs the first candidate that exists and exits cleanly. `trailing` is
+/// appended as a final argument when present.
+#[cfg(target_os = "linux")]
+fn run_first_available(what: &str, candidates: &[(&str, &[&str])], trailing: Option<&str>) -> bool {
+    use std::process::Command;
+
+    for (cmd, prefix_args) in candidates {
+        let mut command = Command::new(cmd);
+        command.args(*prefix_args);
+
+        if let Some(trailing) = trailing {
+            command.arg(trailing);
+        }
+
+        match command.status() {
+            Ok(status) if status.success() => return true,
+            Ok(status) => printlog!("{what}: {cmd} exited with {status}"),
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => continue,
+            Err(e) => printlog!("{what}: failed to spawn {cmd}: {e}"),
+        }
+    }
+
+    printlog!(
+        "{what}: no working input tool found (tried {}). Install xdotool (X11) or wtype/ydotool (Wayland; ydotool also needs ydotoold running).",
+        candidates
+            .iter()
+            .map(|(c, _)| *c)
+            .collect::<Vec<_>>()
+            .join(", ")
+    );
+
+    false
 }
 
 #[cfg(not(target_os = "linux"))]
@@ -33,14 +263,7 @@ fn type_text(content: &str) {
 
 #[cfg(target_os = "linux")]
 fn type_text(content: &str) {
-    use std::process::Command;
-
-    let is_wayland = std::env::var_os("WAYLAND_DISPLAY").is_some()
-        || std::env::var("XDG_SESSION_TYPE")
-            .map(|v| v.eq_ignore_ascii_case("wayland"))
-            .unwrap_or(false);
-
-    let candidates: &[(&str, &[&str])] = if is_wayland {
+    let candidates: &[(&str, &[&str])] = if is_wayland() {
         &[("wtype", &["--"]), ("ydotool", &["type", "--"])]
     } else {
         &[
@@ -49,30 +272,7 @@ fn type_text(content: &str) {
         ]
     };
 
-    for (cmd, prefix_args) in candidates {
-        let mut command = Command::new(cmd);
-        command.args(*prefix_args).arg(content);
-
-        match command.status() {
-            Ok(status) if status.success() => return,
-            Ok(status) => {
-                printlog!("type_clipboard: {cmd} exited with {status}");
-            }
-            Err(e) if e.kind() == std::io::ErrorKind::NotFound => continue,
-            Err(e) => {
-                printlog!("type_clipboard: failed to spawn {cmd}: {e}");
-            }
-        }
-    }
-
-    printlog!(
-        "type_clipboard: no working typing tool found (tried {}). Install xdotool (X11) or wtype/ydotool (Wayland).",
-        candidates
-            .iter()
-            .map(|(c, _)| *c)
-            .collect::<Vec<_>>()
-            .join(", ")
-    );
+    run_first_available("type_clipboard", candidates, Some(content));
 }
 
 fn get_clipboard_content(clipboard_data: &FullClipboardDto) -> Option<String> {
