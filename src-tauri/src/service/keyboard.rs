@@ -3,7 +3,9 @@ use crate::service::cipher::is_encryption_key_set;
 use crate::service::clipboard::{get_clipboard_db, get_last_clipboard_db};
 use crate::service::decrypt::decrypt_clipboard;
 use crate::service::settings::get_global_settings;
-use crate::service::target_window::{current_window, get_target_window, raise_target_window};
+use crate::service::target_window::{
+    current_window, get_target_window, modifiers_held, raise_target_window,
+};
 use crate::tao::global::get_main_window;
 use common::types::enums::{ClipboardType, PasteOnSelect};
 use common::types::orm_query::FullClipboardDto;
@@ -22,6 +24,9 @@ const KEY_HOLD_MS: u64 = if cfg!(target_os = "macos") { 100 } else { 50 };
 
 /// Used where the focused window cannot be queried, so settling is all we can do.
 const BLIND_FOCUS_RETURN_MS: u64 = 300;
+
+/// Budget for the user to release a hotkey before the paste is sent regardless.
+const MODIFIER_RELEASE_TIMEOUT_MS: u64 = 2000;
 
 pub async fn type_last_clipboard() {
     let clipboard = get_last_clipboard_db().await;
@@ -65,9 +70,29 @@ pub async fn paste_on_select(clipboard_id: Uuid) {
         return;
     }
 
+    wait_for_modifiers_released().await;
+
     match text {
         Some(text) => type_text(&text),
         None => send_paste_chord(),
+    }
+}
+
+/// Waits for the user to let go of any modifier they are still holding.
+///
+/// Selection is usually driven by a global hotkey, so Ctrl or Super is often
+/// still down. Injecting the chord on top of that produces a different
+/// shortcut in the target window, or types the wrong character.
+async fn wait_for_modifiers_released() {
+    let deadline = std::time::Instant::now() + Duration::from_millis(MODIFIER_RELEASE_TIMEOUT_MS);
+
+    while modifiers_held() {
+        if std::time::Instant::now() >= deadline {
+            printlog!("paste_on_select: modifiers still held, sending anyway");
+            return;
+        }
+
+        tokio::time::sleep(Duration::from_millis(FOCUS_POLL_INTERVAL_MS)).await;
     }
 }
 

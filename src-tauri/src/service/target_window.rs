@@ -98,6 +98,42 @@ pub fn raise_target_window() {
 #[cfg(not(target_os = "linux"))]
 pub fn raise_target_window() {}
 
+/// Whether any of Ctrl, Shift, Alt or Super is currently held.
+#[cfg(target_os = "linux")]
+pub fn modifiers_held() -> bool {
+    use x11rb::connection::Connection;
+    use x11rb::protocol::xproto::{ConnectionExt, KeyButMask};
+
+    let Ok((conn, screen_num)) = x11rb::connect(None) else {
+        return false;
+    };
+
+    let Some(root) = conn.setup().roots.get(screen_num).map(|s| s.root) else {
+        return false;
+    };
+
+    let held = conn
+        .query_pointer(root)
+        .ok()
+        .and_then(|cookie| cookie.reply().ok())
+        .map(|reply| reply.mask);
+
+    let Some(held) = held else {
+        return false;
+    };
+
+    let modifiers = KeyButMask::CONTROL | KeyButMask::SHIFT | KeyButMask::MOD1 | KeyButMask::MOD4;
+
+    held.intersects(modifiers)
+}
+
+/// Reading live modifier state needs GetKeyState on Windows and CGEventSource
+/// on macOS; until then, assume nothing is held.
+#[cfg(not(target_os = "linux"))]
+pub fn modifiers_held() -> bool {
+    false
+}
+
 /// The window the display server currently considers focused.
 #[cfg(target_os = "linux")]
 pub fn current_window() -> Option<u32> {
