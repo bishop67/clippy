@@ -56,7 +56,7 @@ async fn connect_and_migrate(database_url: &str) -> Result<DbConn, DbErr> {
         .acquire_timeout(Duration::from_secs(10))
         .connect_with(opt)
         .await
-        .map_err(|e| DbErr::Conn(sea_orm::RuntimeErr::SqlxError(e)))?;
+        .map_err(|e| DbErr::Conn(sea_orm::RuntimeErr::SqlxError(std::sync::Arc::new(e))))?;
 
     let conn = SqlxSqliteConnector::from_sqlx_sqlite_pool(pool);
     Migrator::up(&conn, None).await?;

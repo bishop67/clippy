@@ -3,7 +3,7 @@ use sea_orm_migration::{
     schema::{boolean, date_time, json, uuid},
 };
 
-#[derive(Iden)]
+#[derive(DeriveIden)]
 pub enum Clipboard {
     Table,
     Id,

@@ -4,7 +4,7 @@ use sea_orm_migration::{
     schema::{blob, integer, string, text, uuid},
 };
 
-#[derive(Iden)]
+#[derive(DeriveIden)]
 pub enum ClipboardImage {
     Table,
     Id,

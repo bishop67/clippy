@@ -1,6 +1,6 @@
 use sea_orm_migration::{prelude::*, schema::boolean};
 
-#[derive(Iden)]
+#[derive(DeriveIden)]
 enum Hotkey {
     Table,
     SuperKey,

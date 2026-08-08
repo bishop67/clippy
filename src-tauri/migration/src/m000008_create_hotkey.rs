@@ -5,7 +5,7 @@ use sea_orm_migration::{
     schema::{boolean, pk_auto, string},
 };
 
-#[derive(Iden)]
+#[derive(DeriveIden)]
 enum Hotkey {
     Table,
     Id,

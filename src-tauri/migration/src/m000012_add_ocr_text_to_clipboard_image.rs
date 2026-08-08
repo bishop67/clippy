@@ -1,6 +1,6 @@
 use sea_orm_migration::{prelude::*, schema::text_null};
 
-#[derive(Iden)]
+#[derive(DeriveIden)]
 enum ClipboardImage {
     Table,
     OcrText,

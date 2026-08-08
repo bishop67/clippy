@@ -3,7 +3,7 @@ use sea_orm_migration::{
     schema::{boolean, string},
 };
 
-#[derive(Iden)]
+#[derive(DeriveIden)]
 enum Settings {
     Table,
     Theme,

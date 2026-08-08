@@ -3,12 +3,12 @@ use sea_orm_migration::prelude::*;
 #[derive(DeriveMigrationName)]
 pub struct Migration;
 
-#[derive(Iden)]
+#[derive(DeriveIden)]
 enum Settings {
     Table,
-    #[iden = "enryption_save_before_unlock"]
+    #[sea_orm(iden = "enryption_save_before_unlock")]
     EnryptionSaveBeforeUnlock,
-    #[iden = "encryption_save_before_unlock"]
+    #[sea_orm(iden = "encryption_save_before_unlock")]
     EncryptionSaveBeforeUnlock,
 }
 

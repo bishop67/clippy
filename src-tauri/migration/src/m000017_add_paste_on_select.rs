@@ -3,7 +3,7 @@ use sea_orm_migration::{
     schema::{string, string_null},
 };
 
-#[derive(Iden)]
+#[derive(DeriveIden)]
 enum Settings {
     Table,
     PasteOnSelect,

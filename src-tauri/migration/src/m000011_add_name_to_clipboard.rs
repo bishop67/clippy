@@ -1,6 +1,6 @@
 use sea_orm_migration::{prelude::*, schema::string_null};
 
-#[derive(Iden)]
+#[derive(DeriveIden)]
 enum Clipboard {
     Table,
     Name,

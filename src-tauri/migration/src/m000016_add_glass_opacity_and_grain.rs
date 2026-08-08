@@ -1,6 +1,6 @@
 use sea_orm_migration::{prelude::*, schema::float};
 
-#[derive(Iden)]
+#[derive(DeriveIden)]
 enum Settings {
     Table,
     GlassOpacity,

@@ -1,53 +1,53 @@
 use sea_orm::prelude::*;
-use sea_orm::{sea_query, EnumIter};
+use sea_orm::EnumIter;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value as JsonValue};
 
-#[derive(Iden, EnumIter, PartialEq, Eq, Hash, Serialize, Deserialize, Debug, Clone)]
+#[derive(DeriveIden, EnumIter, PartialEq, Eq, Hash, Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "lowercase")]
 pub enum ClippyPosition {
-    #[iden = "cursor"]
+    #[sea_orm(iden = "cursor")]
     Cursor,
-    #[iden = "top_left"]
+    #[sea_orm(iden = "top_left")]
     TopLeft,
-    #[iden = "top_right"]
+    #[sea_orm(iden = "top_right")]
     TopRight,
-    #[iden = "bottom_left"]
+    #[sea_orm(iden = "bottom_left")]
     BottomLeft,
-    #[iden = "bottom_right"]
+    #[sea_orm(iden = "bottom_right")]
     BottomRight,
-    #[iden = "top_center"]
+    #[sea_orm(iden = "top_center")]
     TopCenter,
-    #[iden = "bottom_center"]
+    #[sea_orm(iden = "bottom_center")]
     BottomCenter,
-    #[iden = "left_center"]
+    #[sea_orm(iden = "left_center")]
     LeftCenter,
-    #[iden = "right_center"]
+    #[sea_orm(iden = "right_center")]
     RightCenter,
-    #[iden = "center"]
+    #[sea_orm(iden = "center")]
     Center,
-    // #[iden = "tray_left"]
+    // #[sea_orm(iden = "tray_left")]
     // TrayLeft,
-    // #[iden = "tray_bottom_left"]
+    // #[sea_orm(iden = "tray_bottom_left")]
     // TrayBottomLeft,
-    // #[iden = "tray_right"]
+    // #[sea_orm(iden = "tray_right")]
     // TrayRight,
-    // #[iden = "tray_bottom_right"]
+    // #[sea_orm(iden = "tray_bottom_right")]
     // TrayBottomRight,
-    // #[iden = "tray_center"]
+    // #[sea_orm(iden = "tray_center")]
     // TrayCenter,
-    // #[iden = "tray_bottom_center"]
+    // #[sea_orm(iden = "tray_bottom_center")]
     // TrayBottomCenter,
 }
 
-#[derive(Iden, EnumIter, PartialEq, Eq, Hash, Serialize, Deserialize, Debug, Clone)]
+#[derive(DeriveIden, EnumIter, PartialEq, Eq, Hash, Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "lowercase")]
 pub enum PasteOnSelect {
-    #[iden = "off"]
+    #[sea_orm(iden = "off")]
     Off,
-    #[iden = "paste"]
+    #[sea_orm(iden = "paste")]
     Paste,
-    #[iden = "type"]
+    #[sea_orm(iden = "type")]
     Type,
 }
 
@@ -64,198 +64,198 @@ impl PasteOnSelect {
     }
 }
 
-#[derive(Iden, EnumIter, PartialEq, Eq, Hash, Serialize, Deserialize, Debug, Clone)]
+#[derive(DeriveIden, EnumIter, PartialEq, Eq, Hash, Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "lowercase")]
 pub enum SyncProviderType {
-    #[iden = "google_drive"]
+    #[sea_orm(iden = "google_drive")]
     GoogleDrive,
 }
 
-#[derive(Iden, EnumIter, PartialEq, Eq, Hash, Serialize, Deserialize, Debug, Clone)]
+#[derive(DeriveIden, EnumIter, PartialEq, Eq, Hash, Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "lowercase")]
 pub enum FolderLocation {
-    #[iden = "database"]
+    #[sea_orm(iden = "database")]
     Database,
-    #[iden = "config"]
+    #[sea_orm(iden = "config")]
     Config,
 }
 
-#[derive(Iden, EnumIter, PartialEq, Eq, Hash, Serialize, Deserialize, Debug, Clone)]
+#[derive(DeriveIden, EnumIter, PartialEq, Eq, Hash, Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "lowercase")]
 pub enum Language {
-    #[iden = "en"]
+    #[sea_orm(iden = "en")]
     English,
-    #[iden = "zh"]
+    #[sea_orm(iden = "zh")]
     Mandarin,
-    #[iden = "hi"]
+    #[sea_orm(iden = "hi")]
     Hindi,
-    #[iden = "es"]
+    #[sea_orm(iden = "es")]
     Spanish,
-    #[iden = "fr"]
+    #[sea_orm(iden = "fr")]
     French,
-    #[iden = "ar"]
+    #[sea_orm(iden = "ar")]
     Arabic,
-    #[iden = "bn"]
+    #[sea_orm(iden = "bn")]
     Bengali,
-    #[iden = "pt"]
+    #[sea_orm(iden = "pt")]
     Portuguese,
-    #[iden = "ru"]
+    #[sea_orm(iden = "ru")]
     Russian,
-    #[iden = "ur"]
+    #[sea_orm(iden = "ur")]
     Urdu,
-    #[iden = "ja"]
+    #[sea_orm(iden = "ja")]
     Japanese,
-    #[iden = "de"]
+    #[sea_orm(iden = "de")]
     German,
-    #[iden = "ko"]
+    #[sea_orm(iden = "ko")]
     Korean,
-    #[iden = "vi"]
+    #[sea_orm(iden = "vi")]
     Vietnamese,
-    #[iden = "tr"]
+    #[sea_orm(iden = "tr")]
     Turkish,
-    #[iden = "it"]
+    #[sea_orm(iden = "it")]
     Italian,
-    #[iden = "th"]
+    #[sea_orm(iden = "th")]
     Thai,
-    #[iden = "pl"]
+    #[sea_orm(iden = "pl")]
     Polish,
-    #[iden = "nl"]
+    #[sea_orm(iden = "nl")]
     Dutch,
 }
 
-#[derive(Iden, EnumIter, PartialEq, Eq, Hash, Serialize, Deserialize, Debug, Clone)]
+#[derive(DeriveIden, EnumIter, PartialEq, Eq, Hash, Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "lowercase")]
 pub enum ListenEvent {
-    #[iden = "init_clipboards"]
+    #[sea_orm(iden = "init_clipboards")]
     InitClipboards,
-    #[iden = "init_hotkeys"]
+    #[sea_orm(iden = "init_hotkeys")]
     InitHotkeys,
-    #[iden = "init_settings"]
+    #[sea_orm(iden = "init_settings")]
     InitSettings,
-    #[iden = "enable_global_hotkey_event"]
+    #[sea_orm(iden = "enable_global_hotkey_event")]
     EnableGlobalHotkeyEvent,
-    #[iden = "change_tab"]
+    #[sea_orm(iden = "change_tab")]
     ChangeTab,
-    #[iden = "scroll_to_top"]
+    #[sea_orm(iden = "scroll_to_top")]
     ScrollToTop,
-    #[iden = "new_clipboard"]
+    #[sea_orm(iden = "new_clipboard")]
     NewClipboard,
-    #[iden = "progress"]
+    #[sea_orm(iden = "progress")]
     Progress,
-    #[iden = "password_lock"]
+    #[sea_orm(iden = "password_lock")]
     PasswordLock,
 }
 
-#[derive(Iden, EnumIter, PartialEq, Eq, Hash, Serialize, Deserialize, Debug, Clone)]
+#[derive(DeriveIden, EnumIter, PartialEq, Eq, Hash, Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "lowercase")]
 pub enum HotkeyEvent {
-    #[iden = "window_display_toggle"]
+    #[sea_orm(iden = "window_display_toggle")]
     WindowDisplayToggle,
-    #[iden = "type_clipboard"]
+    #[sea_orm(iden = "type_clipboard")]
     TypeClipboard,
-    #[iden = "scroll_to_top"]
+    #[sea_orm(iden = "scroll_to_top")]
     ScrollToTop,
-    #[iden = "sync_clipboard_history"]
+    #[sea_orm(iden = "sync_clipboard_history")]
     SyncClipboardHistory,
-    #[iden = "settings"]
+    #[sea_orm(iden = "settings")]
     Settings,
-    #[iden = "about"]
+    #[sea_orm(iden = "about")]
     About,
-    #[iden = "exit"]
+    #[sea_orm(iden = "exit")]
     Exit,
-    #[iden = "recent_clipboards"]
+    #[sea_orm(iden = "recent_clipboards")]
     RecentClipboards,
-    #[iden = "starred_clipboards"]
+    #[sea_orm(iden = "starred_clipboards")]
     StarredClipboards,
-    #[iden = "history"]
+    #[sea_orm(iden = "history")]
     History,
-    #[iden = "view_more"]
+    #[sea_orm(iden = "view_more")]
     ViewMore,
-    #[iden = "digit_1"]
+    #[sea_orm(iden = "digit_1")]
     Digit1,
-    #[iden = "digit_2"]
+    #[sea_orm(iden = "digit_2")]
     Digit2,
-    #[iden = "digit_3"]
+    #[sea_orm(iden = "digit_3")]
     Digit3,
-    #[iden = "digit_4"]
+    #[sea_orm(iden = "digit_4")]
     Digit4,
-    #[iden = "digit_5"]
+    #[sea_orm(iden = "digit_5")]
     Digit5,
-    #[iden = "digit_6"]
+    #[sea_orm(iden = "digit_6")]
     Digit6,
-    #[iden = "digit_7"]
+    #[sea_orm(iden = "digit_7")]
     Digit7,
-    #[iden = "digit_8"]
+    #[sea_orm(iden = "digit_8")]
     Digit8,
-    #[iden = "digit_9"]
+    #[sea_orm(iden = "digit_9")]
     Digit9,
-    #[iden = "num_1"]
+    #[sea_orm(iden = "num_1")]
     Num1,
-    #[iden = "num_2"]
+    #[sea_orm(iden = "num_2")]
     Num2,
-    #[iden = "num_3"]
+    #[sea_orm(iden = "num_3")]
     Num3,
-    #[iden = "num_4"]
+    #[sea_orm(iden = "num_4")]
     Num4,
-    #[iden = "num_5"]
+    #[sea_orm(iden = "num_5")]
     Num5,
-    #[iden = "num_6"]
+    #[sea_orm(iden = "num_6")]
     Num6,
-    #[iden = "num_7"]
+    #[sea_orm(iden = "num_7")]
     Num7,
-    #[iden = "num_8"]
+    #[sea_orm(iden = "num_8")]
     Num8,
-    #[iden = "num_9"]
+    #[sea_orm(iden = "num_9")]
     Num9,
 }
 
-#[derive(Iden, EnumIter, PartialEq, Eq, Hash, Serialize, Deserialize, Debug, Clone)]
+#[derive(DeriveIden, EnumIter, PartialEq, Eq, Hash, Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "lowercase")]
 pub enum WebWindow {
-    #[iden = "main"]
+    #[sea_orm(iden = "main")]
     Main,
-    #[iden = "about"]
+    #[sea_orm(iden = "about")]
     About,
-    #[iden = "settings"]
+    #[sea_orm(iden = "settings")]
     Settings,
 }
 
-#[derive(Iden, EnumIter, PartialEq, Eq, Hash, Serialize, Deserialize, Debug, Clone)]
+#[derive(DeriveIden, EnumIter, PartialEq, Eq, Hash, Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "lowercase")]
 pub enum ClipboardTextType {
-    #[iden = "text"]
+    #[sea_orm(iden = "text")]
     Text,
-    #[iden = "link"]
+    #[sea_orm(iden = "link")]
     Link,
-    #[iden = "hex"]
+    #[sea_orm(iden = "hex")]
     Hex,
-    #[iden = "rgb"]
+    #[sea_orm(iden = "rgb")]
     Rgb,
 }
 
-#[derive(Iden, EnumIter, PartialEq, Eq, Hash, Serialize, Deserialize, Debug, Clone)]
+#[derive(DeriveIden, EnumIter, PartialEq, Eq, Hash, Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "lowercase")]
 pub enum ClipboardType {
-    #[iden = "text"]
+    #[sea_orm(iden = "text")]
     Text,
-    #[iden = "image"]
+    #[sea_orm(iden = "image")]
     Image,
-    #[iden = "html"]
+    #[sea_orm(iden = "html")]
     Html,
-    #[iden = "rtf"]
+    #[sea_orm(iden = "rtf")]
     Rtf,
-    #[iden = "file"]
+    #[sea_orm(iden = "file")]
     File,
 }
 
-#[derive(Iden, EnumIter, PartialEq, Eq, Hash, Serialize, Deserialize, Debug, Clone)]
+#[derive(DeriveIden, EnumIter, PartialEq, Eq, Hash, Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "lowercase")]
 pub enum PasswordAction {
-    #[iden = "encrypt"]
+    #[sea_orm(iden = "encrypt")]
     Encrypt,
-    #[iden = "decrypt"]
+    #[sea_orm(iden = "decrypt")]
     Decrypt,
-    #[iden = "sync_decrypt"]
+    #[sea_orm(iden = "sync_decrypt")]
     SyncDecrypt,
 }
 

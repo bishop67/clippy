@@ -1,7 +1,7 @@
 use crate::m000001_create_clipboard::Clipboard;
 use sea_orm_migration::{prelude::*, schema::{text, uuid}};
 
-#[derive(Iden)]
+#[derive(DeriveIden)]
 pub enum ClipboardRtf {
     Table,
     Id,

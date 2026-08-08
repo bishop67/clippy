@@ -18,7 +18,7 @@ impl MigrationTrait for Migration {
         // added in a later migration) that don't exist yet at this migration step.
         // Inserting via `entity::hotkey::ActiveModel` here would emit SQL for the
         // full, current schema and fail on a fresh database.
-        db.execute(Statement::from_string(
+        db.execute_raw(Statement::from_string(
             backend,
             "INSERT INTO settings DEFAULT VALUES".to_owned(),
         ))
@@ -46,7 +46,7 @@ impl MigrationTrait for Migration {
         ];
 
         for (event, ctrl, key, name, icon) in hotkeys {
-            db.execute(Statement::from_sql_and_values(
+            db.execute_raw(Statement::from_sql_and_values(
                 backend,
                 "INSERT INTO hotkey (event, ctrl, alt, shift, key, status, name, icon) \
                  VALUES (?, ?, ?, ?, ?, ?, ?, ?)",

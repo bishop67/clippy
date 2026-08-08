@@ -24,8 +24,8 @@ use entity::{
 use sea_orm::prelude::{Expr, Uuid};
 use sea_orm::RelationTrait;
 use sea_orm::{
-    ActiveModelTrait, ColumnTrait, EntityTrait, Iterable, JoinType, LoaderTrait, PaginatorTrait,
-    QueryFilter, QueryOrder, QuerySelect, QueryTrait, TransactionTrait,
+    ActiveModelTrait, ColumnTrait, EntityTrait, ExprTrait, Iterable, JoinType, LoaderTrait,
+    PaginatorTrait, QueryFilter, QueryOrder, QuerySelect, QueryTrait, TransactionTrait,
 };
 use std::collections::HashMap;
 use std::sync::Mutex;

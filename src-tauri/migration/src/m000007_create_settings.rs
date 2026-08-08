@@ -15,7 +15,7 @@ use sea_orm_migration::{
     schema::{boolean, float, integer, json, pk_auto, string},
 };
 
-#[derive(Iden)]
+#[derive(DeriveIden)]
 enum Settings {
     Table,
     Id,

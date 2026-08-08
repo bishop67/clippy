@@ -6,7 +6,7 @@ use sea_orm_migration::{
     schema::{string, text, uuid},
 };
 
-#[derive(Iden)]
+#[derive(DeriveIden)]
 pub enum ClipboardText {
     Table,
     Id,
