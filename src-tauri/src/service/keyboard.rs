@@ -107,8 +107,10 @@ fn hide_for_paste() {
 /// Pasting into an unknown window is worse than not pasting at all.
 async fn wait_for_target_focus() -> bool {
     let Some(target) = get_target_window() else {
-        // No window was recorded (Wayland, or the picker was opened from the
-        // tray), so settle and trust whatever holds focus.
+        // Either the platform cannot report a window or the picker was opened
+        // from the tray. Raise what we can and settle; there is nothing to poll
+        // against, so the delay is the only guarantee that focus has moved on.
+        raise_target_window();
         tokio::time::sleep(Duration::from_millis(BLIND_FOCUS_RETURN_MS)).await;
         return true;
     };

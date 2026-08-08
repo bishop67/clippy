@@ -48,6 +48,9 @@ pub fn raise_target_window() {
     let _ = conn.flush();
 }
 
+/// No-op until the platform can name the window to raise. Tauri only manages
+/// its own windows, so this needs AXUIElement on macOS and SetForegroundWindow
+/// on Windows, alongside a capture that records those handles.
 #[cfg(not(target_os = "linux"))]
 pub fn raise_target_window() {}
 
