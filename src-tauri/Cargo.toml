@@ -99,10 +99,30 @@ x11rb = "0.13"
 [target.'cfg(windows)'.dependencies]
 # Attach to the parent terminal's console (if any) so the GUI release build
 # can print logs when launched from a terminal. See attach_parent_console().
-windows-sys = { version = "0", features = [
+# Pinned: HWND became a pointer in 0.60, and "0" resolved back to 0.45 where it
+# is still an isize.
+windows-sys = { version = "0.61", features = [
   "Win32_System_Console",
   "Win32_Foundation",
   "Win32_Graphics_Dwm",
+  # Recording and re-activating the window to paste into.
+  "Win32_UI_WindowsAndMessaging",
+  "Win32_UI_Input_KeyboardAndMouse",
+  "Win32_System_Threading",
+] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+# Recording and re-activating the application to paste into.
+objc2 = "0.6"
+objc2-app-kit = { version = "0.3", default-features = false, features = [
+  "std",
+  "NSEvent",
+  "NSRunningApplication",
+  "NSResponder",
+  "NSWorkspace",
+] }
+objc2-foundation = { version = "0.3", default-features = false, features = [
+  "std",
 ] }
 
 [profile.release]

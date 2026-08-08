@@ -1104,6 +1104,9 @@ dependencies = [
  "migration",
  "mime_guess",
  "moka",
+ "objc2",
+ "objc2-app-kit",
+ "objc2-foundation",
  "ocr-rs",
  "rayon",
  "regex",
@@ -1126,7 +1129,7 @@ dependencies = [
  "urlencoding",
  "uuid",
  "window-vibrancy",
- "windows-sys 0.45.0",
+ "windows-sys 0.61.2",
  "x11rb 0.13.2",
 ]
 

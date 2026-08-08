@@ -4,7 +4,7 @@ use crate::service::clipboard::{get_clipboard_db, get_last_clipboard_db};
 use crate::service::decrypt::decrypt_clipboard;
 use crate::service::settings::get_global_settings;
 use crate::service::target_window::{
-    current_window, get_target_window, modifiers_held, raise_target_window,
+    current_window, get_target_window, modifiers_held, raise_target_window, TargetWindow,
 };
 use crate::tao::global::get_main_window;
 use common::types::enums::{ClipboardType, PasteOnSelect};
@@ -156,7 +156,7 @@ async fn wait_for_target_focus() -> bool {
     false
 }
 
-async fn poll_focus(target: u32, timeout_ms: u64) -> bool {
+async fn poll_focus(target: TargetWindow, timeout_ms: u64) -> bool {
     let deadline = std::time::Instant::now() + Duration::from_millis(timeout_ms);
 
     loop {
