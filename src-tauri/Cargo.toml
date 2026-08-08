@@ -60,7 +60,14 @@ chrono = "0"
 regex = "1"
 
 # keyboard input
-enigo = { version = "0", features = ["wayland", "libei_smol"] }
+# xdg_desktop routes Wayland input through the RemoteDesktop portal, which GNOME
+# and KDE implement; the wlroots-only virtual-keyboard protocol does not cover them.
+enigo = { git = "https://github.com/0-don/enigo", rev = "8575b177833318e4e18300cc541027f1877f2edc", default-features = false, features = [
+  "x11rb",
+  "xdg_desktop",
+  "smol",
+  "platform_specific",
+] }
 
 # image
 image = "0"
@@ -84,6 +91,10 @@ moka = { version = "0", features = ["sync"] }
 
 # ocr
 ocr-rs = "2"
+
+[target.'cfg(target_os = "linux")'.dependencies]
+# Reads _NET_ACTIVE_WINDOW to remember which window to paste into.
+x11rb = "0.13"
 
 [target.'cfg(windows)'.dependencies]
 # Attach to the parent terminal's console (if any) so the GUI release build
