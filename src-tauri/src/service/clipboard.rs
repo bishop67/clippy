@@ -1,11 +1,15 @@
 use super::cipher::is_encryption_key_set;
 use super::decrypt::decrypt_clipboard;
+use super::encrypt::encrypt_data;
 use super::settings::get_global_settings;
 use super::sync::{get_sync_manager, get_sync_provider};
 use crate::prelude::*;
 use crate::tao::connection::db;
 use crate::tao::global::{get_app, get_cache, get_main_window};
+use crate::utils::clipboard_manager::detect_text_type;
 use crate::utils::providers::uuid_to_datetime;
+use base64::engine::general_purpose::STANDARD;
+use base64::Engine;
 use chrono::NaiveDateTime;
 use common::builder::keyword::KeywordBuilder;
 use common::constants::CACHE_KEY;
@@ -17,7 +21,7 @@ use entity::clipboard::{self, Model};
 use entity::{
     clipboard_file, clipboard_html, clipboard_image, clipboard_rtf, clipboard_text, settings,
 };
-use sea_orm::prelude::Uuid;
+use sea_orm::prelude::{Expr, Uuid};
 use sea_orm::RelationTrait;
 use sea_orm::{
     ActiveModelTrait, ColumnTrait, EntityTrait, Iterable, JoinType, LoaderTrait, PaginatorTrait,
@@ -497,6 +501,130 @@ pub async fn star_clipboard_db(id: Uuid, star: bool) -> Result<bool, CommandErro
         tauri::async_runtime::spawn(async move {
             let provider = get_sync_provider().await;
             provider.star_clipboard(&clipboard).await
+        });
+    }
+
+    Ok(true)
+}
+
+/// Replaces an entry's text and display name.
+///
+/// Editing the text makes any html and rtf siblings stale copies of the old
+/// content, so they are dropped and the entry becomes plain text. CopyQ does the
+/// same: editing one format clears the rest rather than leaving them to
+/// contradict each other.
+pub async fn update_clipboard_content_db(
+    id: Uuid,
+    name: Option<String>,
+    data: String,
+) -> Result<bool, CommandError> {
+    let db = db();
+    let settings = get_global_settings();
+
+    if data.is_empty() {
+        return Err(CommandError::new("Clipboard content cannot be empty"));
+    }
+
+    if data.len() > settings.max_text_size as usize {
+        return Err(CommandError::new(
+            "Clipboard content exceeds the configured maximum text size",
+        ));
+    }
+
+    let clipboard = clipboard::Entity::find_by_id(id)
+        .one(db)
+        .await?
+        .ok_or_else(|| CommandError::new("Clipboard not found"))?;
+
+    // The caller edited plaintext. Storing it as-is in a row flagged encrypted
+    // makes the next decrypt fail, and a failed decrypt deletes the row.
+    let stored = if clipboard.encrypted {
+        if !is_encryption_key_set() {
+            return Err(CommandError::new(
+                "Cannot edit an encrypted clipboard while it is locked",
+            ));
+        }
+
+        STANDARD.encode(
+            encrypt_data(data.as_bytes())
+                .map_err(|e| CommandError::new(&format!("Failed to encrypt clipboard: {e}")))?,
+        )
+    } else {
+        data.clone()
+    };
+
+    clipboard_text::Entity::update_many()
+        .col_expr(clipboard_text::Column::Data, Expr::value(stored))
+        .col_expr(
+            clipboard_text::Column::Type,
+            Expr::value(detect_text_type(&data).to_string()),
+        )
+        .filter(clipboard_text::Column::ClipboardId.eq(id))
+        .exec(db)
+        .await?;
+
+    clipboard_html::Entity::delete_many()
+        .filter(clipboard_html::Column::ClipboardId.eq(id))
+        .exec(db)
+        .await?;
+
+    clipboard_rtf::Entity::delete_many()
+        .filter(clipboard_rtf::Column::ClipboardId.eq(id))
+        .exec(db)
+        .await?;
+
+    let types = ClipboardType::from_json_value(&clipboard.types)
+        .unwrap_or_else(|| vec![ClipboardType::Text])
+        .into_iter()
+        .filter(|t| !matches!(t, ClipboardType::Html | ClipboardType::Rtf))
+        .collect::<Vec<_>>();
+
+    let updated = clipboard::Entity::update(clipboard::ActiveModel {
+        id: Set(id),
+        name: Set(name),
+        types: Set(ClipboardType::to_json_value(&types)),
+        ..Default::default()
+    })
+    .exec(db)
+    .await?;
+
+    // Backs encrypted-mode search, so stale text here matches on content that no
+    // longer exists.
+    get_cache().invalidate_all();
+
+    if settings.sync {
+        // Loaded here rather than in the task: the loader's future is not Send.
+        let clipboard = load_clipboards_with_relations(vec![updated]).await.remove(0);
+
+        tauri::async_runtime::spawn(async move {
+            let provider = get_sync_provider().await;
+
+            // Scoped so the non-Send error type from the fetch is dropped
+            // before the next await.
+            let existing = match provider.fetch_all_clipboards().await {
+                Ok(remote) => remote.into_iter().find(|r| r.id == id),
+                Err(e) => {
+                    printlog!("update_clipboard_content: failed to fetch remote: {e:?}");
+                    return;
+                }
+            };
+
+            let failed = match &existing {
+                Some(existing) => provider
+                    .update_clipboard(&clipboard, existing)
+                    .await
+                    .err()
+                    .map(|e| format!("{e:?}")),
+                None => provider
+                    .upload_clipboard(&clipboard)
+                    .await
+                    .err()
+                    .map(|e| format!("{e:?}")),
+            };
+
+            if let Some(failed) = failed {
+                printlog!("update_clipboard_content: sync failed: {failed}");
+            }
         });
     }
 

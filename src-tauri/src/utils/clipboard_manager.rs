@@ -34,6 +34,17 @@ static RE_HEX: LazyLock<Regex> = LazyLock::new(|| {
 static RE_RGB: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(r"^(?:rgb|rgba|hsl|hsla|hsv|hwb)\((.*)\)").unwrap()
 });
+
+/// Drives which icon and colour swatch the entry renders with, so it has to be
+/// recomputed whenever the text changes and not just on capture.
+pub fn detect_text_type(text: &str) -> ClipboardTextType {
+    match text {
+        t if RE_LINK.is_match(t) => ClipboardTextType::Link,
+        t if RE_HEX.is_match(t) => ClipboardTextType::Hex,
+        t if RE_RGB.is_match(t) => ClipboardTextType::Rgb,
+        _ => ClipboardTextType::Text,
+    }
+}
 use tauri::Manager;
 use tauri_plugin_clipboard::Clipboard;
 use urlencoding::decode;
@@ -284,14 +295,8 @@ impl ClipboardManagerExt for FullClipboardDbo {
             text.filter(|t| !t.is_empty() && t.len() <= settings.max_text_size as usize)
         {
             types.push(ClipboardType::Text);
-            self.clipboard_text_model.data = Set(text.clone());
-            self.clipboard_text_model.r#type = Set(match text {
-                t if RE_LINK.is_match(&t) => ClipboardTextType::Link,
-                t if RE_HEX.is_match(&t) => ClipboardTextType::Hex,
-                t if RE_RGB.is_match(&t) => ClipboardTextType::Rgb,
-                _ => ClipboardTextType::Text,
-            }
-            .to_string());
+            self.clipboard_text_model.r#type = Set(detect_text_type(&text).to_string());
+            self.clipboard_text_model.data = Set(text);
         }
 
         if let Some(html) =

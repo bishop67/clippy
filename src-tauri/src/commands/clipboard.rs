@@ -12,6 +12,7 @@ use crate::{
     service::clipboard::{
         clear_clipboards_db, copy_clipboard_from_id, delete_clipboards_db, get_clipboard_count_db,
         get_clipboard_db, get_clipboards_db, rename_clipboard_db, star_clipboard_db,
+        update_clipboard_content_db,
     },
     utils::hotkey_manager::unregister_hotkeys,
 };
@@ -320,6 +321,31 @@ pub async fn star_clipboard(id: Uuid, star: bool) -> Result<bool, CommandError> 
 #[tauri::command]
 pub async fn rename_clipboard(id: Uuid, name: Option<String>) -> Result<bool, CommandError> {
     Ok(rename_clipboard_db(id, name).await?)
+}
+
+/// Full, untrimmed entry, decrypted where possible.
+///
+/// The list commands truncate text to a preview length, so the editor has to
+/// come here for the real content.
+#[tauri::command]
+pub async fn get_clipboard(id: Uuid) -> Result<FullClipboardDto, CommandError> {
+    let mut clipboard = get_clipboard_db(id).await?;
+
+    if clipboard.clipboard.encrypted && is_encryption_key_set() {
+        clipboard = decrypt_clipboard(clipboard)
+            .map_err(|e| CommandError::Error(format!("Failed to decrypt clipboard: {}", e)))?;
+    }
+
+    Ok(clipboard)
+}
+
+#[tauri::command]
+pub async fn update_clipboard_content(
+    id: Uuid,
+    name: Option<String>,
+    data: String,
+) -> Result<bool, CommandError> {
+    Ok(update_clipboard_content_db(id, name, data).await?)
 }
 
 #[tauri::command]

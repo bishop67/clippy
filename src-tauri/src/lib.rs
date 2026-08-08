@@ -94,6 +94,8 @@ pub fn run() {
             clipboard::delete_clipboard,
             clipboard::star_clipboard,
             clipboard::rename_clipboard,
+            clipboard::get_clipboard,
+            clipboard::update_clipboard_content,
             clipboard::copy_clipboard,
             clipboard::clear_clipboards,
             clipboard::save_clipboard_image,
