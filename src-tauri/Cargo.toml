@@ -95,6 +95,9 @@ ocr-rs = "2"
 [target.'cfg(target_os = "linux")'.dependencies]
 # Reads _NET_ACTIVE_WINDOW to remember which window to paste into.
 x11rb = "0.13"
+# Not used directly: enables the StatusNotifierItem backend on the tray-icon
+# that tauri pulls in, so the tray reports left clicks.
+tray-icon = { version = "0.24", features = ["ksni"] }
 
 [target.'cfg(windows)'.dependencies]
 # Attach to the parent terminal's console (if any) so the GUI release build
@@ -124,6 +127,14 @@ objc2-app-kit = { version = "0.3", default-features = false, features = [
 objc2-foundation = { version = "0.3", default-features = false, features = [
   "std",
 ] }
+
+# tray-icon's default Linux backend goes through libappindicator, which never
+# implemented the StatusNotifierItem Activate method, so left clicks on the tray
+# icon are never reported. These forks serve the protocol directly instead.
+# Upstream: tauri-apps/tray-icon#349 and tauri-apps/muda#389.
+[patch.crates-io]
+tray-icon = { git = "https://github.com/0-don/tray-icon", branch = "dev" }
+muda = { git = "https://github.com/0-don/muda", branch = "dev" }
 
 [profile.release]
 # panic = "abort"
