@@ -78,6 +78,10 @@ export const LANGUAGES = [
 
 export const PASTE_ON_SELECT_MODES = ["off", "paste", "type"] as const;
 
+// Mirrors MAX_TEXT_PREVIEW in src-tauri/common/src/constants.rs: list payloads
+// arrive truncated to this length.
+export const MAX_TEXT_PREVIEW = 500;
+
 export const CLIPPY_POSITIONS = [
   "cursor",
   "top_left",

@@ -1,6 +1,7 @@
 import {
   ClipboardResponse,
   ClipboardWhere,
+  ClipboardWithRelations,
   DatabaseInfo,
   DecryptEvent,
   Hotkey,
@@ -22,6 +23,8 @@ export enum InvokeCommand {
   DeleteClipboard = "delete_clipboard",
   StarClipboard = "star_clipboard",
   RenameClipboard = "rename_clipboard",
+  GetClipboard = "get_clipboard",
+  UpdateClipboardContent = "update_clipboard_content",
   CopyClipboard = "copy_clipboard",
   ClearClipboards = "clear_clipboards",
   SaveClipboardImage = "save_clipboard_image",
@@ -81,6 +84,14 @@ export interface TauriInvokeCommands {
   };
   [InvokeCommand.RenameClipboard]: {
     args: { id: number; name: string | null };
+    return: boolean;
+  };
+  [InvokeCommand.GetClipboard]: {
+    args: { id: number };
+    return: ClipboardWithRelations;
+  };
+  [InvokeCommand.UpdateClipboardContent]: {
+    args: { id: number; name: string | null; data: string };
     return: boolean;
   };
   [InvokeCommand.CopyClipboard]: {

@@ -3,13 +3,15 @@ import { FiChevronDown, FiChevronUp, FiEdit3 } from "solid-icons/fi";
 import { IoTrashOutline } from "solid-icons/io";
 import { TbOutlineSourceCode } from "solid-icons/tb";
 import { VsStarFull } from "solid-icons/vs";
-import { Component, createSignal } from "solid-js";
+import { Component, createSignal, Show } from "solid-js";
 import { invokeCommand } from "../../../../lib/tauri";
 import { ClipboardStore } from "../../../../store/clipboard-store";
 import { ClipboardModel, ClipboardWithRelations } from "../../../../types";
 import { ClipboardType } from "../../../../types/enums";
 import { InvokeCommand } from "../../../../types/tauri-invoke";
 import { copyEntry } from "../../../../utils/clipboard-actions";
+import { MAX_TEXT_PREVIEW } from "../../../../utils/constants";
+import { ClipboardEditor } from "../../../elements/clipboard-editor";
 import { useLanguage } from "../../../provider/language-provider";
 import { FileClipboard } from "./file-clipboard";
 import { ImageClipboard } from "./image-clipboard";
@@ -24,9 +26,6 @@ interface BaseClipboardProps {
 export const BaseClipboard: Component<BaseClipboardProps> = (props) => {
   const { t } = useLanguage();
   const [editing, setEditing] = createSignal(false);
-  const [editValue, setEditValue] = createSignal(
-    props.data.clipboard.name || "",
-  );
 
   const handleDelete = async (id: number) => {
     await invokeCommand(InvokeCommand.DeleteClipboard, { id });
@@ -57,46 +56,34 @@ export const BaseClipboard: Component<BaseClipboardProps> = (props) => {
     );
   };
 
-  const handleEditName = (e: MouseEvent) => {
+  const handleEdit = (e: MouseEvent) => {
     e.stopPropagation();
-    setEditValue(props.data.clipboard.name || "");
     setEditing(true);
   };
 
-  const handleRenameConfirm = async () => {
-    const trimmed = editValue().trim();
-    const name = trimmed.length > 0 ? trimmed : null;
-    await invokeCommand(InvokeCommand.RenameClipboard, {
+  // Refetched rather than patched from the edited string: the backend
+  // reclassifies the text (link, hex, rgb, plain) on save, and that type drives
+  // the icon and colour swatch.
+  const handleSaved = async () => {
+    const saved = await invokeCommand(InvokeCommand.GetClipboard, {
       id: props.data.clipboard.id,
-      name,
     });
+
     ClipboardStore.setClipboards((prev) =>
       prev.map((o) =>
         o.clipboard.id === props.data.clipboard.id
           ? {
-              ...o,
-              clipboard: {
-                ...o.clipboard,
-                name,
-              },
+              ...saved,
+              text: saved.text
+                ? {
+                    ...saved.text,
+                    data: saved.text.data.slice(0, MAX_TEXT_PREVIEW),
+                  }
+                : saved.text,
             }
           : o,
       ),
     );
-    setEditing(false);
-  };
-
-  const handleRenameCancel = () => {
-    setEditing(false);
-  };
-
-  const handleRenameKeyDown = (e: KeyboardEvent) => {
-    e.stopPropagation();
-    if (e.key === "Enter") {
-      handleRenameConfirm();
-    } else if (e.key === "Escape") {
-      handleRenameCancel();
-    }
   };
 
   const handleRtfCopy = async (e: MouseEvent) => {
@@ -121,24 +108,15 @@ export const BaseClipboard: Component<BaseClipboardProps> = (props) => {
   };
 
   return (
-    <div
-      class={`group relative ${props.isSelected ? "bg-muted" : ""}`}
-    >
-      {editing() ? (
-        <div class="flex items-center gap-2 px-3 py-2">
-          <input
-            ref={(el) => setTimeout(() => el.focus(), 0)}
-            type="text"
-            value={editValue()}
-            onInput={(e) => setEditValue(e.currentTarget.value)}
-            onKeyDown={handleRenameKeyDown}
-            onBlur={handleRenameConfirm}
-            onClick={(e) => e.stopPropagation()}
-            placeholder={t("CLIPBOARD.ENTER_NAME")}
-            class="w-full rounded border border-border bg-background px-2 py-1 text-sm outline-none focus:border-primary text-foreground"
-          />
-        </div>
-      ) : (
+    <div class={`group relative ${props.isSelected ? "bg-muted" : ""}`}>
+      <Show when={editing()}>
+        <ClipboardEditor
+          entry={props.data}
+          onClose={() => setEditing(false)}
+          onSaved={handleSaved}
+        />
+      </Show>
+      {
         <>
           {/* Actions overlay */}
           <div class="absolute top-0 right-0 bottom-0 z-10 my-1 flex flex-col items-end justify-between">
@@ -156,8 +134,8 @@ export const BaseClipboard: Component<BaseClipboardProps> = (props) => {
             />
             <div class="flex items-center gap-1">
               <FiEdit3
-                onClick={handleEditName}
-                title={t("CLIPBOARD.EDIT_NAME")}
+                onClick={handleEdit}
+                title={t("CLIPBOARD.EDIT_ENTRY")}
                 class="hidden cursor-pointer text-foreground group-hover:block hover:text-blue-600 dark:hover:text-blue-400"
               />
               {props.data.rtf && (
@@ -214,7 +192,7 @@ export const BaseClipboard: Component<BaseClipboardProps> = (props) => {
             <TextClipboard {...props} />
           )}
         </>
-      )}
+      }
     </div>
   );
 };
