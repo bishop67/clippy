@@ -94,17 +94,17 @@ ocr-rs = "2"
 
 [target.'cfg(target_os = "linux")'.dependencies]
 # Reads _NET_ACTIVE_WINDOW to remember which window to paste into.
-x11rb = "0.13"
+x11rb = "0"
 # Not used directly: enables the StatusNotifierItem backend on the tray-icon
 # that tauri pulls in, so the tray reports left clicks.
-tray-icon = { version = "0.24", features = ["linux-ksni"] }
+tray-icon = { version = "0", features = ["linux-ksni"] }
 
 [target.'cfg(windows)'.dependencies]
 # Attach to the parent terminal's console (if any) so the GUI release build
 # can print logs when launched from a terminal. See attach_parent_console().
 # Pinned: HWND became a pointer in 0.60, and "0" resolved back to 0.45 where it
 # is still an isize.
-windows-sys = { version = "0.61", features = [
+windows-sys = { version = "0", features = [
   "Win32_System_Console",
   "Win32_Foundation",
   "Win32_Graphics_Dwm",
@@ -116,15 +116,15 @@ windows-sys = { version = "0.61", features = [
 
 [target.'cfg(target_os = "macos")'.dependencies]
 # Recording and re-activating the application to paste into.
-objc2 = "0.6"
-objc2-app-kit = { version = "0.3", default-features = false, features = [
+objc2 = "0"
+objc2-app-kit = { version = "0", default-features = false, features = [
   "std",
   "NSEvent",
   "NSRunningApplication",
   "NSResponder",
   "NSWorkspace",
 ] }
-objc2-foundation = { version = "0.3", default-features = false, features = [
+objc2-foundation = { version = "0", default-features = false, features = [
   "std",
 ] }
 
