@@ -92,6 +92,11 @@
     },
     "OFFLINE": "离线",
     "ONLINE": "在线的",
+    "PASTE_ON_SELECT": {
+      "OFF": "关闭",
+      "PASTE": "粘贴",
+      "TYPE": "输入"
+    },
     "POSITION": {
       "BOTTOM_CENTER": "底部中心",
       "BOTTOM_LEFT": "左下方",
@@ -152,6 +157,8 @@
       "GLASS_EFFECT": "玻璃效果",
       "HTML_CLIPBOARD_TOOLTIP": "HTML 剪贴板工具提示",
       "KEYBOARD_SHORTCUT": "键盘快捷键",
+      "PASTE_ON_SELECT": "选择时粘贴",
+      "PASTE_ON_SELECT_INFO": "将条目粘贴到先前聚焦的窗口。终端可能需要输入模式。",
       "START_CLIPPY_ON_STARTUP": "在系统启动时启动 Clippy",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN": "热键抑制",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN_INFO": "当其他应用程序处于全屏模式时抑制全局热键",

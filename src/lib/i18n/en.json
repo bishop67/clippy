@@ -92,6 +92,11 @@
     },
     "OFFLINE": "Offline",
     "ONLINE": "Online",
+    "PASTE_ON_SELECT": {
+      "OFF": "Off",
+      "PASTE": "Paste",
+      "TYPE": "Type"
+    },
     "POSITION": {
       "BOTTOM_CENTER": "Bottom center",
       "BOTTOM_LEFT": "Bottom left",
@@ -154,6 +159,8 @@
       "GLASS_GRAIN": "Glass frost",
       "HTML_CLIPBOARD_TOOLTIP": "HTML clipboard tooltip",
       "KEYBOARD_SHORTCUT": "Keyboard shortcut",
+      "PASTE_ON_SELECT": "Paste on select",
+      "PASTE_ON_SELECT_INFO": "Pastes the entry into the previously focused window. Terminals may need typing mode.",
       "START_CLIPPY_ON_STARTUP": "Start Clippy on system startup",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN": "Hotkey Suppression",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN_INFO": "Suppresses global hotkeys when another application is in fullscreen mode",

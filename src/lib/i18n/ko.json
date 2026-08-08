@@ -92,6 +92,11 @@
     },
     "OFFLINE": "오프라인",
     "ONLINE": "온라인",
+    "PASTE_ON_SELECT": {
+      "OFF": "끄기",
+      "PASTE": "붙여넣기",
+      "TYPE": "입력"
+    },
     "POSITION": {
       "BOTTOM_CENTER": "하단 중앙",
       "BOTTOM_LEFT": "왼쪽 하단",
@@ -152,6 +157,8 @@
       "GLASS_EFFECT": "유리 효과",
       "HTML_CLIPBOARD_TOOLTIP": "HTML 클립보드 툴팁",
       "KEYBOARD_SHORTCUT": "단축키",
+      "PASTE_ON_SELECT": "선택 시 붙여넣기",
+      "PASTE_ON_SELECT_INFO": "이전에 포커스된 창에 항목을 붙여넣습니다. 터미널에서는 입력 모드가 필요할 수 있습니다.",
       "START_CLIPPY_ON_STARTUP": "시스템 시작 시 Clippy 시작",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN": "단축키 억제",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN_INFO": "다른 애플리케이션이 전체 화면 모드일 때 전역 단축키를 억제합니다",

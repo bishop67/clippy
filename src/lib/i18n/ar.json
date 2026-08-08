@@ -92,6 +92,11 @@
     },
     "OFFLINE": "غير متصل على الانترنت",
     "ONLINE": "متصل",
+    "PASTE_ON_SELECT": {
+      "OFF": "إيقاف",
+      "PASTE": "لصق",
+      "TYPE": "كتابة"
+    },
     "POSITION": {
       "BOTTOM_CENTER": "أسفل المركز",
       "BOTTOM_LEFT": "أسفل اليسار",
@@ -152,6 +157,8 @@
       "GLASS_EFFECT": "تأثير الزجاج",
       "HTML_CLIPBOARD_TOOLTIP": "تلميحات حول حافظة HTML",
       "KEYBOARD_SHORTCUT": "اختصار لوحة المفاتيح",
+      "PASTE_ON_SELECT": "اللصق عند التحديد",
+      "PASTE_ON_SELECT_INFO": "يلصق العنصر في النافذة التي كانت نشطة سابقًا. قد تحتاج الطرفيات إلى وضع الكتابة.",
       "START_CLIPPY_ON_STARTUP": "بدء تشغيل Clippy عند بدء تشغيل النظام",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN": "كتم مفاتيح الاختصار",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN_INFO": "يكتم مفاتيح الاختصار العامة عندما يكون تطبيق آخر في وضع ملء الشاشة",

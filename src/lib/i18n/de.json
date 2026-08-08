@@ -92,6 +92,11 @@
     },
     "OFFLINE": "Offline",
     "ONLINE": "Online",
+    "PASTE_ON_SELECT": {
+      "OFF": "Aus",
+      "PASTE": "Einfügen",
+      "TYPE": "Tippen"
+    },
     "POSITION": {
       "BOTTOM_CENTER": "Unten in der Mitte",
       "BOTTOM_LEFT": "Unten links",
@@ -152,6 +157,8 @@
       "GLASS_EFFECT": "Glaseffekt",
       "HTML_CLIPBOARD_TOOLTIP": "HTML-Zwischenablage-Tooltip",
       "KEYBOARD_SHORTCUT": "Tastenkombination",
+      "PASTE_ON_SELECT": "Beim Auswählen einfügen",
+      "PASTE_ON_SELECT_INFO": "Fügt den Eintrag in das zuvor fokussierte Fenster ein. Terminals benötigen möglicherweise den Tippmodus.",
       "START_CLIPPY_ON_STARTUP": "Starten Sie Clippy beim Systemstart",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN": "Hotkey-Unterdrückung",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN_INFO": "Unterdrückt globale Hotkeys, wenn eine andere Anwendung im Vollbildmodus ist",

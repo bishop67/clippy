@@ -42,6 +42,30 @@ pub enum ClippyPosition {
 
 #[derive(Iden, EnumIter, PartialEq, Eq, Hash, Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "lowercase")]
+pub enum PasteOnSelect {
+    #[iden = "off"]
+    Off,
+    #[iden = "paste"]
+    Paste,
+    #[iden = "type"]
+    Type,
+}
+
+impl PasteOnSelect {
+    /// Anything unrecognised means Off: a settings row synced from a newer
+    /// client can name a mode this build has no code for, and silently sending
+    /// keystrokes is worse than doing nothing.
+    pub fn from_setting(value: &str) -> Self {
+        match value {
+            "paste" => Self::Paste,
+            "type" => Self::Type,
+            _ => Self::Off,
+        }
+    }
+}
+
+#[derive(Iden, EnumIter, PartialEq, Eq, Hash, Serialize, Deserialize, Debug, Clone)]
+#[serde(rename_all = "lowercase")]
 pub enum SyncProviderType {
     #[iden = "google_drive"]
     GoogleDrive,

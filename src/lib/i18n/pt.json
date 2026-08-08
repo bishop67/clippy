@@ -92,6 +92,11 @@
     },
     "OFFLINE": "Off-line",
     "ONLINE": "On-line",
+    "PASTE_ON_SELECT": {
+      "OFF": "Desligado",
+      "PASTE": "Colar",
+      "TYPE": "Digitar"
+    },
     "POSITION": {
       "BOTTOM_CENTER": "Centro inferior",
       "BOTTOM_LEFT": "Canto inferior esquerdo",
@@ -152,6 +157,8 @@
       "GLASS_EFFECT": "Efeito de vidro",
       "HTML_CLIPBOARD_TOOLTIP": "Dica de ferramenta da área de transferência HTML",
       "KEYBOARD_SHORTCUT": "Atalho de teclado",
+      "PASTE_ON_SELECT": "Colar ao selecionar",
+      "PASTE_ON_SELECT_INFO": "Cola a entrada na janela anteriormente focada. Os terminais podem precisar do modo de digitação.",
       "START_CLIPPY_ON_STARTUP": "Inicie o Clippy no arranque do sistema",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN": "Supressão de teclas de atalho",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN_INFO": "Suprime as teclas de atalho globais quando outra aplicação está em modo de ecrã inteiro",

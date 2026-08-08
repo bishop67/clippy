@@ -51,6 +51,7 @@ export type TabName = (typeof TAB_NAMES)[number];
 export type Tab = (typeof TABS)[number];
 export type Language = (typeof LANGUAGES)[number];
 export type ClippyPosition = (typeof CLIPPY_POSITIONS)[number];
+export type PasteOnSelect = (typeof PASTE_ON_SELECT_MODES)[number];
 export type GlobalShortcutKeys = (typeof GLOBAL_SHORTCUT_KEYS)[number];
 
 export const LANGUAGES = [
@@ -74,6 +75,8 @@ export const LANGUAGES = [
   "pl", // Polish - ~45 million speakers
   "nl", // Dutch - ~30 million speakers
 ] as const;
+
+export const PASTE_ON_SELECT_MODES = ["off", "paste", "type"] as const;
 
 export const CLIPPY_POSITIONS = [
   "cursor",

@@ -16,6 +16,7 @@ mod m000013_fix_encryption_typo;
 mod m000014_add_super_to_hotkey;
 mod m000015_add_theme_and_glass;
 mod m000016_add_glass_opacity_and_grain;
+mod m000017_add_paste_on_select;
 
 pub struct Migrator;
 
@@ -39,6 +40,7 @@ impl MigratorTrait for Migrator {
             Box::new(m000014_add_super_to_hotkey::Migration),
             Box::new(m000015_add_theme_and_glass::Migration),
             Box::new(m000016_add_glass_opacity_and_grain::Migration),
+            Box::new(m000017_add_paste_on_select::Migration),
         ]
     }
 }

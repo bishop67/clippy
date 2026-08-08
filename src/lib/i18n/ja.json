@@ -92,6 +92,11 @@
     },
     "OFFLINE": "オフライン",
     "ONLINE": "オンライン",
+    "PASTE_ON_SELECT": {
+      "OFF": "オフ",
+      "PASTE": "貼り付け",
+      "TYPE": "入力"
+    },
     "POSITION": {
       "BOTTOM_CENTER": "下中央",
       "BOTTOM_LEFT": "左下",
@@ -152,6 +157,8 @@
       "GLASS_EFFECT": "ガラス効果",
       "HTML_CLIPBOARD_TOOLTIP": "HTML クリップボード ツールチップ",
       "KEYBOARD_SHORTCUT": "キーボードショートカット",
+      "PASTE_ON_SELECT": "選択時に貼り付け",
+      "PASTE_ON_SELECT_INFO": "直前にフォーカスされていたウィンドウに項目を貼り付けます。ターミナルでは入力モードが必要な場合があります。",
       "START_CLIPPY_ON_STARTUP": "システム起動時にClippyを起動する",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN": "ホットキー抑制",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN_INFO": "別のアプリケーションがフルスクリーンモードの場合、グローバルホットキーを抑制します",

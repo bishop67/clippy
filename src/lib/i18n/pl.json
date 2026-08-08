@@ -92,6 +92,11 @@
     },
     "OFFLINE": "Nieaktywny",
     "ONLINE": "Online",
+    "PASTE_ON_SELECT": {
+      "OFF": "Wyłączone",
+      "PASTE": "Wklej",
+      "TYPE": "Pisz"
+    },
     "POSITION": {
       "BOTTOM_CENTER": "Dolny środek",
       "BOTTOM_LEFT": "Na dole po lewej",
@@ -152,6 +157,8 @@
       "GLASS_EFFECT": "Efekt szkła",
       "HTML_CLIPBOARD_TOOLTIP": "Podpowiedź schowka HTML",
       "KEYBOARD_SHORTCUT": "Skrót klawiaturowy",
+      "PASTE_ON_SELECT": "Wklej przy wyborze",
+      "PASTE_ON_SELECT_INFO": "Wkleja wpis do poprzednio aktywnego okna. Terminale mogą wymagać trybu pisania.",
       "START_CLIPPY_ON_STARTUP": "Uruchom Clippy przy starcie systemu",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN": "Tłumienie skrótów klawiszowych",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN_INFO": "Tłumi globalne skróty klawiszowe, gdy inna aplikacja jest w trybie pełnoekranowym",

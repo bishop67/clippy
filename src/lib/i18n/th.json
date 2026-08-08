@@ -92,6 +92,11 @@
     },
     "OFFLINE": "ออฟไลน์",
     "ONLINE": "ออนไลน์",
+    "PASTE_ON_SELECT": {
+      "OFF": "ปิด",
+      "PASTE": "วาง",
+      "TYPE": "พิมพ์"
+    },
     "POSITION": {
       "BOTTOM_CENTER": "กลางล่าง",
       "BOTTOM_LEFT": "ล่างซ้าย",
@@ -152,6 +157,8 @@
       "GLASS_EFFECT": "เอฟเฟกต์กระจก",
       "HTML_CLIPBOARD_TOOLTIP": "คำแนะนำคลิปบอร์ด HTML",
       "KEYBOARD_SHORTCUT": "แป้นพิมพ์ลัด",
+      "PASTE_ON_SELECT": "วางเมื่อเลือก",
+      "PASTE_ON_SELECT_INFO": "วางรายการลงในหน้าต่างที่โฟกัสก่อนหน้า เทอร์มินัลอาจต้องใช้โหมดพิมพ์",
       "START_CLIPPY_ON_STARTUP": "เริ่ม Clippy เมื่อระบบเริ่มต้น",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN": "การระงับปุ่มลัด",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN_INFO": "ระงับปุ่มลัดทั่วไปเมื่อแอปพลิเคชันอื่นอยู่ในโหมดเต็มหน้าจอ",

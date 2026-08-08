@@ -92,6 +92,11 @@
     },
     "OFFLINE": "Offline",
     "ONLINE": "Online",
+    "PASTE_ON_SELECT": {
+      "OFF": "Uit",
+      "PASTE": "Plakken",
+      "TYPE": "Typen"
+    },
     "POSITION": {
       "BOTTOM_CENTER": "Middenonder",
       "BOTTOM_LEFT": "Linksonder",
@@ -152,6 +157,8 @@
       "GLASS_EFFECT": "Glaseffect",
       "HTML_CLIPBOARD_TOOLTIP": "HTML-klembord-tooltip",
       "KEYBOARD_SHORTCUT": "Sneltoets",
+      "PASTE_ON_SELECT": "Plakken bij selecteren",
+      "PASTE_ON_SELECT_INFO": "Plakt het item in het eerder actieve venster. Terminals hebben mogelijk de typmodus nodig.",
       "START_CLIPPY_ON_STARTUP": "Start Clippy bij het opstarten van het systeem",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN": "Sneltoets onderdrukking",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN_INFO": "Onderdrukt globale sneltoetsen wanneer een andere applicatie op volledig scherm staat",

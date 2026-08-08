@@ -39,6 +39,8 @@ pub struct Model {
     pub glass: bool,
     pub glass_opacity: f32,
     pub glass_grain: f32,
+    pub paste_on_select: String,
+    pub paste_restore_token: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveColumn)]
@@ -66,6 +68,8 @@ pub enum Column {
     Glass,
     GlassOpacity,
     GlassGrain,
+    PasteOnSelect,
+    PasteRestoreToken,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DerivePrimaryKey)]
@@ -110,6 +114,8 @@ impl ColumnTrait for Column {
             Self::Glass => ColumnType::Boolean.def(),
             Self::GlassOpacity => ColumnType::Float.def(),
             Self::GlassGrain => ColumnType::Float.def(),
+            Self::PasteOnSelect => ColumnType::String(StringLen::None).def(),
+            Self::PasteRestoreToken => ColumnType::String(StringLen::None).def().nullable(),
         }
     }
 }

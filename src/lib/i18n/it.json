@@ -92,6 +92,11 @@
     },
     "OFFLINE": "Disconnesso",
     "ONLINE": "In linea",
+    "PASTE_ON_SELECT": {
+      "OFF": "Disattivato",
+      "PASTE": "Incolla",
+      "TYPE": "Digita"
+    },
     "POSITION": {
       "BOTTOM_CENTER": "In basso al centro",
       "BOTTOM_LEFT": "In basso a sinistra",
@@ -154,6 +159,8 @@
       "GLASS_GRAIN": "Gel vetro",
       "HTML_CLIPBOARD_TOOLTIP": "Suggerimenti appunti HTML",
       "KEYBOARD_SHORTCUT": "Scorciatoia tastiera",
+      "PASTE_ON_SELECT": "Incolla alla selezione",
+      "PASTE_ON_SELECT_INFO": "Incolla la voce nella finestra precedentemente attiva. I terminali potrebbero richiedere la modalità digitazione.",
       "START_CLIPPY_ON_STARTUP": "Esegui Clippy all'avvio del sistema",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN": "Disabilita tasti scelta rapida",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN_INFO": "Disabilita tasti scelta rapida globali quando un'altra applicazione è in modalità schermo intero",

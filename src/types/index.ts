@@ -3,6 +3,7 @@ import { DictionaryKey } from "../lib/i18n";
 import {
   ClippyPosition,
   Language,
+  PasteOnSelect,
   SettingsTabName,
   Tab,
   TabName,
@@ -164,6 +165,10 @@ export type Settings = {
   glass: boolean;
   glass_opacity: number;
   glass_grain: number;
+  paste_on_select: PasteOnSelect;
+  // Owned by the backend portal session; present so updateSettings round-trips
+  // it instead of clearing it.
+  paste_restore_token: string | null;
 };
 
 export type TextMatcher = {

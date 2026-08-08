@@ -19,6 +19,8 @@ import {
   ClippyPosition,
   Language,
   LANGUAGES,
+  PASTE_ON_SELECT_MODES,
+  PasteOnSelect,
   THEMES,
   ThemeName,
 } from "../../../utils/constants";
@@ -210,6 +212,34 @@ export const SettingsGeneral: Component<SettingsGeneralProps> = ({}) => {
               }
             />
           </div>
+        </div>
+
+        <div class="flex items-center justify-between space-x-2 px-5 pb-5">
+          <div class="flex flex-col truncate">
+            <div class="flex items-center space-x-2">
+              <RiDeviceKeyboardFill />
+              <h6 class="text-sm">{t("SETTINGS.GENERAL.PASTE_ON_SELECT")}</h6>
+            </div>
+            <p class="ml-6 text-xs text-muted-foreground">
+              {t("SETTINGS.GENERAL.PASTE_ON_SELECT_INFO")}
+            </p>
+          </div>
+
+          <Dropdown
+            items={PASTE_ON_SELECT_MODES.map((value) => ({
+              value,
+              label: msg(
+                `MAIN.PASTE_ON_SELECT.${value.toUpperCase() as Uppercase<PasteOnSelect>}`,
+              ),
+            }))}
+            value={SettingsStore.settings()!.paste_on_select}
+            onChange={(paste_on_select) => {
+              SettingsStore.updateSettings({
+                ...SettingsStore.settings()!,
+                paste_on_select: paste_on_select as PasteOnSelect,
+              });
+            }}
+          />
         </div>
 
         <div class="flex items-center justify-between space-x-2 px-5 pb-5">

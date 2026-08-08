@@ -92,6 +92,11 @@
     },
     "OFFLINE": "Hors ligne",
     "ONLINE": "En ligne",
+    "PASTE_ON_SELECT": {
+      "OFF": "Désactivé",
+      "PASTE": "Coller",
+      "TYPE": "Saisir"
+    },
     "POSITION": {
       "BOTTOM_CENTER": "En bas au centre",
       "BOTTOM_LEFT": "En bas à gauche",
@@ -152,6 +157,8 @@
       "GLASS_EFFECT": "Effet de verre",
       "HTML_CLIPBOARD_TOOLTIP": "Info-bulle du presse-papiers HTML",
       "KEYBOARD_SHORTCUT": "Raccourci clavier",
+      "PASTE_ON_SELECT": "Coller à la sélection",
+      "PASTE_ON_SELECT_INFO": "Colle l'entrée dans la fenêtre précédemment active. Les terminaux peuvent nécessiter le mode saisie.",
       "START_CLIPPY_ON_STARTUP": "Démarrer Clippy au démarrage du système",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN": "Suppression des raccourcis clavier",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN_INFO": "Supprime les raccourcis clavier globaux lorsqu'une autre application est en mode plein écran",

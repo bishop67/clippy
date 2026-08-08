@@ -92,6 +92,11 @@
     },
     "OFFLINE": "آف لائن",
     "ONLINE": "آن لائن",
+    "PASTE_ON_SELECT": {
+      "OFF": "بند",
+      "PASTE": "چسپاں کریں",
+      "TYPE": "ٹائپ کریں"
+    },
     "POSITION": {
       "BOTTOM_CENTER": "نیچے کا مرکز",
       "BOTTOM_LEFT": "نیچے بائیں",
@@ -152,6 +157,8 @@
       "GLASS_EFFECT": "گلاس ایفیکٹ",
       "HTML_CLIPBOARD_TOOLTIP": "HTML کلپ بورڈ ٹول ٹپ",
       "KEYBOARD_SHORTCUT": "کی بورڈ شارٹ کٹ",
+      "PASTE_ON_SELECT": "منتخب کرنے پر چسپاں کریں",
+      "PASTE_ON_SELECT_INFO": "اندراج کو پہلے فعال ونڈو میں چسپاں کرتا ہے۔ ٹرمینلز کو ٹائپنگ موڈ کی ضرورت ہو سکتی ہے۔",
       "START_CLIPPY_ON_STARTUP": "سسٹم اسٹارٹ اپ پر کلیپی شروع کریں۔",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN": "ہاٹ کی دبانا",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN_INFO": "جب کوئی دوسری ایپلی کیشن فل سکرین موڈ میں ہو تو عالمی ہاٹ کیز کو دباتا ہے",

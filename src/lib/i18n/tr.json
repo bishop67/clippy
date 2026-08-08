@@ -92,6 +92,11 @@
     },
     "OFFLINE": "Çevrimdışı",
     "ONLINE": "Çevrimiçi",
+    "PASTE_ON_SELECT": {
+      "OFF": "Kapalı",
+      "PASTE": "Yapıştır",
+      "TYPE": "Yaz"
+    },
     "POSITION": {
       "BOTTOM_CENTER": "Alt merkez",
       "BOTTOM_LEFT": "Sol alt",
@@ -152,6 +157,8 @@
       "GLASS_EFFECT": "Cam efekti",
       "HTML_CLIPBOARD_TOOLTIP": "HTML panosu araç ipucu",
       "KEYBOARD_SHORTCUT": "Klavye kısayolu",
+      "PASTE_ON_SELECT": "Seçildiğinde yapıştır",
+      "PASTE_ON_SELECT_INFO": "Girdiyi daha önce odaklanmış pencereye yapıştırır. Terminaller yazma modu gerektirebilir.",
       "START_CLIPPY_ON_STARTUP": "Sistem başlangıcında Clippy'yi başlatın",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN": "Kısayol Tuşu Bastırma",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN_INFO": "Başka bir uygulama tam ekran modundayken genel kısayol tuşlarını bastırır",

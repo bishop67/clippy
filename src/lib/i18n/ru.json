@@ -92,6 +92,11 @@
     },
     "OFFLINE": "Не в сети",
     "ONLINE": "В сети",
+    "PASTE_ON_SELECT": {
+      "OFF": "Выключено",
+      "PASTE": "Вставка",
+      "TYPE": "Набор"
+    },
     "POSITION": {
       "BOTTOM_CENTER": "Внизу по центру",
       "BOTTOM_LEFT": "Внизу слева",
@@ -152,6 +157,8 @@
       "GLASS_EFFECT": "Эффект стекла",
       "HTML_CLIPBOARD_TOOLTIP": "Подсказка буфера обмена HTML",
       "KEYBOARD_SHORTCUT": "Сочетание клавиш",
+      "PASTE_ON_SELECT": "Вставлять при выборе",
+      "PASTE_ON_SELECT_INFO": "Вставляет запись в ранее активное окно. Терминалам может потребоваться режим набора.",
       "START_CLIPPY_ON_STARTUP": "Запустить Clippy при запуске системы",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN": "Подавление горячих клавиш",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN_INFO": "Подавляет глобальные горячие клавиши, когда другое приложение в полноэкранном режиме",

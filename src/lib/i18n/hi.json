@@ -92,6 +92,11 @@
     },
     "OFFLINE": "ऑफलाइन",
     "ONLINE": "ऑनलाइन",
+    "PASTE_ON_SELECT": {
+      "OFF": "बंद",
+      "PASTE": "चिपकाएँ",
+      "TYPE": "टाइप करें"
+    },
     "POSITION": {
       "BOTTOM_CENTER": "निचला बीच का",
       "BOTTOM_LEFT": "तली छोड़ें",
@@ -152,6 +157,8 @@
       "GLASS_EFFECT": "ग्लास प्रभाव",
       "HTML_CLIPBOARD_TOOLTIP": "HTML क्लिपबोर्ड टूलटिप",
       "KEYBOARD_SHORTCUT": "कीबोर्ड शॉर्टकट",
+      "PASTE_ON_SELECT": "चुनने पर चिपकाएँ",
+      "PASTE_ON_SELECT_INFO": "प्रविष्टि को पहले सक्रिय विंडो में चिपकाता है। टर्मिनल को टाइपिंग मोड की आवश्यकता हो सकती है।",
       "START_CLIPPY_ON_STARTUP": "सिस्टम स्टार्टअप पर क्लिप्पी प्रारंभ करें",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN": "हॉटकी दमन",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN_INFO": "जब कोई अन्य एप्लिकेशन पूर्णस्क्रीन मोड में हो तो वैश्विक हॉटकी को दबाता है",

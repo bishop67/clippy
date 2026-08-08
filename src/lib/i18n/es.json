@@ -92,6 +92,11 @@
     },
     "OFFLINE": "Desconectado",
     "ONLINE": "En línea",
+    "PASTE_ON_SELECT": {
+      "OFF": "Desactivado",
+      "PASTE": "Pegar",
+      "TYPE": "Escribir"
+    },
     "POSITION": {
       "BOTTOM_CENTER": "Parte inferior central",
       "BOTTOM_LEFT": "Abajo a la izquierda",
@@ -152,6 +157,8 @@
       "GLASS_EFFECT": "Efecto de vidrio",
       "HTML_CLIPBOARD_TOOLTIP": "Información sobre herramientas del portapapeles HTML",
       "KEYBOARD_SHORTCUT": "Atajo de teclado",
+      "PASTE_ON_SELECT": "Pegar al seleccionar",
+      "PASTE_ON_SELECT_INFO": "Pega la entrada en la ventana enfocada anteriormente. Puede que las terminales necesiten el modo de escritura.",
       "START_CLIPPY_ON_STARTUP": "Iniciar Clippy al iniciar el sistema",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN": "Supresión de teclas de acceso rápido",
       "SUPPRESS_HOTKEY_ON_FULLSCREEN_INFO": "Suprime las teclas de acceso rápido globales cuando otra aplicación está en modo de pantalla completa",
