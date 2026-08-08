@@ -25,25 +25,69 @@ pub fn get_target_window() -> Option<u32> {
     *TARGET_WINDOW.lock().unwrap_or_else(|e| e.into_inner())
 }
 
-/// Raises the recorded window and asks the server to focus it.
+/// Asks the window manager to activate the recorded window.
+///
+/// Goes through the EWMH `_NET_ACTIVE_WINDOW` client message rather than
+/// `SetInputFocus`, which errors with BadMatch on an unviewable window and
+/// fights the window manager's own focus policy on non-reparenting WMs.
 #[cfg(target_os = "linux")]
 pub fn raise_target_window() {
     use x11rb::connection::Connection;
-    use x11rb::protocol::xproto::{ConnectionExt, InputFocus, StackMode};
+    use x11rb::protocol::xproto::{
+        ClientMessageEvent, ConnectionExt, EventMask, InputFocus, MapState, StackMode,
+    };
 
     let Some(window) = get_target_window() else {
         return;
     };
 
-    let Ok((conn, _)) = x11rb::connect(None) else {
+    let Ok((conn, screen_num)) = x11rb::connect(None) else {
         return;
     };
 
-    let config = x11rb::protocol::xproto::ConfigureWindowAux::new().stack_mode(StackMode::ABOVE);
-    if conn.configure_window(window, &config).is_err() {
+    let Some(root) = conn.setup().roots.get(screen_num).map(|s| s.root) else {
+        return;
+    };
+
+    // A window that has since been unmapped or destroyed makes both the raise
+    // and the focus request an error.
+    let viewable = conn
+        .get_window_attributes(window)
+        .ok()
+        .and_then(|cookie| cookie.reply().ok())
+        .is_some_and(|attrs| attrs.map_state == MapState::VIEWABLE);
+
+    if !viewable {
+        printlog!("target_window: {window} is no longer viewable, not raising");
         return;
     }
 
+    if let Ok(atom) = conn.intern_atom(false, b"_NET_ACTIVE_WINDOW") {
+        if let Ok(atom) = atom.reply() {
+            // data[0] = 2 marks the request as coming from a pager, which window
+            // managers honour without the focus-stealing heuristics they apply
+            // to ordinary applications.
+            let event = ClientMessageEvent::new(
+                32,
+                window,
+                atom.atom,
+                [2, x11rb::CURRENT_TIME, 0, 0, 0],
+            );
+
+            let _ = conn.send_event(
+                false,
+                root,
+                EventMask::SUBSTRUCTURE_NOTIFY | EventMask::SUBSTRUCTURE_REDIRECT,
+                event,
+            );
+            let _ = conn.flush();
+            return;
+        }
+    }
+
+    // No EWMH support: fall back to raising and focusing directly.
+    let config = x11rb::protocol::xproto::ConfigureWindowAux::new().stack_mode(StackMode::ABOVE);
+    let _ = conn.configure_window(window, &config);
     let _ = conn.set_input_focus(InputFocus::PARENT, window, x11rb::CURRENT_TIME);
     let _ = conn.flush();
 }
