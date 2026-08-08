@@ -2,6 +2,7 @@ use super::cipher::init_encryption_password_lock;
 use super::settings::get_global_settings;
 use crate::prelude::*;
 use crate::service::hotkey::init_hotkey_event;
+use crate::service::target_window::capture_target_window;
 use crate::tao::global::{get_app, get_main_window, get_window_stop_tx};
 use crate::utils::hotkey_manager::unregister_hotkeys;
 use common::constants::{
@@ -164,6 +165,10 @@ pub fn toggle_main_window() {
             )
             .expect("Failed to emit set global hotkey event");
     } else {
+        // Must happen before the window is shown, while the window the user
+        // came from still holds focus.
+        capture_target_window();
+
         update_main_window_position();
 
         get_main_window()

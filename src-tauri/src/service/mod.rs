@@ -5,5 +5,6 @@ pub mod hotkey;
 pub mod keyboard;
 pub mod settings;
 pub mod sync;
+pub mod target_window;
 pub mod window;
 pub mod cipher;
