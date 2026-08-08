@@ -234,7 +234,10 @@ pub fn position_window_near_cursor() {
 
     match window.cursor_position() {
         Ok(cursor_position) => {
-            let window_size = window.outer_size().expect("Failed to get window size");
+            // The window reports 0x0 until it has been shown at least once, so
+            // the size it is about to be given is used instead. Reading it back
+            // would clamp against nothing and push the window off screen.
+            let window_size = calculate_logical_size(MAIN_WINDOW_X, MAIN_WINDOW_Y);
 
             // Get all monitors
             let all_monitors = window
