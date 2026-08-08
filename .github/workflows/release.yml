@@ -131,8 +131,10 @@ jobs:
           mkdir -p "$NAME_BIN"
           cp "$DEB_SRC" "$NAME_BIN/${NAME}-${VERSION}-x86_64.deb"
 
+          # & and | are special in a sed replacement, so the description is escaped.
+          DESC_SED=$(printf '%s' "${{ needs.setup.outputs.description }}" | sed -e 's/[&|\\]/\\&/g')
           sed -e "s|{{NAME}}|${NAME}|g" -e "s|{{VERSION}}|${VERSION}|g" \
-              -e "s|{{DESCRIPTION}}|${{ needs.setup.outputs.description }}|g" \
+              -e "s|{{DESCRIPTION}}|${DESC_SED}|g" \
               -e "s|{{LICENSE}}|${{ needs.setup.outputs.license }}|g" \
               -e "s|{{SHA256}}|${DEB_SHA256}|g" \
               .github/aur/PKGBUILD > "$NAME_BIN/PKGBUILD"
@@ -188,7 +190,9 @@ jobs:
 
       - name: publish to AUR
         run: |
-          render() { sed -e "s|{{NAME}}|${NAME}|g" -e "s|{{VERSION}}|${VERSION}|g" -e "s|{{DESCRIPTION}}|${DESC}|g" -e "s|{{LICENSE}}|${LICENSE}|g" "$@"; }
+          # & and | are special in a sed replacement, so the description is escaped.
+          DESC_SED=$(printf '%s' "$DESC" | sed -e 's/[&|\\]/\\&/g')
+          render() { sed -e "s|{{NAME}}|${NAME}|g" -e "s|{{VERSION}}|${VERSION}|g" -e "s|{{DESCRIPTION}}|${DESC_SED}|g" -e "s|{{LICENSE}}|${LICENSE}|g" "$@"; }
           export GIT_SSH_COMMAND="ssh -i ~/.ssh/aur"
           git clone ssh://aur@aur.archlinux.org/${NAME}-rs-bin.git /tmp/aur-pkg
           cd /tmp/aur-pkg
@@ -210,7 +214,8 @@ jobs:
 
       - name: update homebrew cask
         run: |
-          render() { sed -e "s|{{NAME}}|${NAME}|g" -e "s|{{VERSION}}|${VERSION}|g" -e "s|{{DESCRIPTION}}|${DESC}|g" -e "s|{{LICENSE}}|${LICENSE}|g" "$@"; }
+          DESC_SED=$(printf '%s' "$DESC" | sed -e 's/[&|\\]/\\&/g')
+          render() { sed -e "s|{{NAME}}|${NAME}|g" -e "s|{{VERSION}}|${VERSION}|g" -e "s|{{DESCRIPTION}}|${DESC_SED}|g" -e "s|{{LICENSE}}|${LICENSE}|g" "$@"; }
           git clone https://github.com/0-don/homebrew-clippy.git /tmp/homebrew-tap
           cd /tmp/homebrew-tap
 
@@ -222,7 +227,8 @@ jobs:
 
       - name: update scoop bucket
         run: |
-          render() { sed -e "s|{{NAME}}|${NAME}|g" -e "s|{{VERSION}}|${VERSION}|g" -e "s|{{DESCRIPTION}}|${DESC}|g" -e "s|{{LICENSE}}|${LICENSE}|g" "$@"; }
+          DESC_SED=$(printf '%s' "$DESC" | sed -e 's/[&|\\]/\\&/g')
+          render() { sed -e "s|{{NAME}}|${NAME}|g" -e "s|{{VERSION}}|${VERSION}|g" -e "s|{{DESCRIPTION}}|${DESC_SED}|g" -e "s|{{LICENSE}}|${LICENSE}|g" "$@"; }
           git clone https://github.com/0-don/scoop-clippy.git /tmp/scoop-bucket
           cd /tmp/scoop-bucket
 
@@ -273,7 +279,8 @@ jobs:
 
       - name: prepare snapcraft.yaml
         run: |
-          render() { sed -e "s|{{NAME}}|${NAME}|g" -e "s|{{VERSION}}|${VERSION}|g" -e "s|{{DESCRIPTION}}|${DESC}|g" -e "s|{{LICENSE}}|${LICENSE}|g" "$@"; }
+          DESC_SED=$(printf '%s' "$DESC" | sed -e 's/[&|\\]/\\&/g')
+          render() { sed -e "s|{{NAME}}|${NAME}|g" -e "s|{{VERSION}}|${VERSION}|g" -e "s|{{DESCRIPTION}}|${DESC_SED}|g" -e "s|{{LICENSE}}|${LICENSE}|g" "$@"; }
           render .github/snap/snapcraft.yaml > snapcraft.yaml
 
       - name: build snap
@@ -297,7 +304,8 @@ jobs:
           sudo pip3 install copr-cli rich
           mkdir -p ~/.config
           echo "$COPR_API_TOKEN" > ~/.config/copr
-          render() { sed -e "s|{{NAME}}|${NAME}|g" -e "s|{{VERSION}}|${VERSION}|g" -e "s|{{DESCRIPTION}}|${DESC}|g" -e "s|{{LICENSE}}|${LICENSE}|g" "$@"; }
+          DESC_SED=$(printf '%s' "$DESC" | sed -e 's/[&|\\]/\\&/g')
+          render() { sed -e "s|{{NAME}}|${NAME}|g" -e "s|{{VERSION}}|${VERSION}|g" -e "s|{{DESCRIPTION}}|${DESC_SED}|g" -e "s|{{LICENSE}}|${LICENSE}|g" "$@"; }
           render .github/copr/clippy.spec > /tmp/clippy.spec
           copr-cli build clippy /tmp/clippy.spec
 
