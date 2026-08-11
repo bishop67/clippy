@@ -1,6 +1,6 @@
 {
   "name": "clippy",
-  "version": "1.7.2",
+  "version": "1.7.3",
   "description": "Clipboard Manager built with Rust & Typescript",
   "license": "MIT",
   "type": "module",
@@ -12,6 +12,7 @@
     "tauri": "cross-env NO_STRIP=true tauri",
     "tauri:build": "cross-env NO_STRIP=true tauri build --verbose",
     "d": "tauri dev",
+    "d:hide": "cross-env CLIPPY_HIDE_ON_BLUR=1 tauri dev",
     "gen": "sea-orm-cli migrate refresh -v -d src-tauri/migration && sea-orm-cli generate entity -l -o src-tauri/entity/src --model-extra-derives Default --expanded-format --with-serde both",
     "icon": "tauri icon",
     "format": "prettier --write .",

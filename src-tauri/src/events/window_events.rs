@@ -5,6 +5,15 @@ use common::types::enums::ListenEvent;
 use tauri::{Emitter, WindowEvent};
 use tokio::sync::oneshot;
 
+/// Whether losing focus should hide the window.
+///
+/// Debug builds keep it open so the devtools can be used, which also means the
+/// release behaviour goes untested. `CLIPPY_HIDE_ON_BLUR=1` opts a debug build
+/// back in.
+fn hide_on_blur() -> bool {
+    !cfg!(debug_assertions) || std::env::var_os("CLIPPY_HIDE_ON_BLUR").is_some()
+}
+
 pub fn setup_window_event_listener() {
     get_main_window().on_window_event(|event| {
         if !get_main_window().is_visible().unwrap_or(false) {
@@ -46,7 +55,7 @@ pub fn setup_window_event_listener() {
                         tx.send(()).unwrap_or(());
                     }
 
-                    if !cfg!(debug_assertions) {
+                    if hide_on_blur() {
                         get_main_window().hide().expect("failed to hide window");
                     }
 
