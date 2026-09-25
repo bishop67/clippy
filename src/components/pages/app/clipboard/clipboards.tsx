@@ -18,8 +18,6 @@ export const Clipboards: Component = () => {
     const ref = ClipboardStore.clipboardRef();
     if (!ref) return;
 
-    // Threshold instead of strict equality: scrollTop is fractional under
-    // display scaling, so an exact match would never trigger the next page.
     const bottom = ref.scrollHeight - ref.scrollTop - ref.clientHeight < 50;
 
     ref.scrollTop !== 0 ? setScrollToTop(true) : setScrollToTop(false);
